@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>요즘 구인 조건</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.1.0/reveal.min.css">
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/jetbrains-mono@5.0.18/index.min.css">
+
+<style>
+  :root{
+    --bg:#0E1726;
+    --bg-soft:#15203360;
+    --surface:#172335;
+    --line:#26334a;
+    --ink:#EAEEF5;
+    --muted:#93a0b5;
+    --muted-soft:#5d6b82;
+    --accent:#F5B544;
+    --accent-soft:#f5b54418;
+    --good:#5BC8A6;
+    --good-soft:#5bc8a615;
+    --sans:"Pretendard Variable", Pretendard, system-ui, sans-serif;
+    --mono:"JetBrains Mono", ui-monospace, monospace;
+  }
+
+  .reveal{ font-family:var(--sans); font-weight:500; color:var(--ink); font-size:30px; }
+  .reveal .slides{ text-align:left; }
+  .reveal .slides section{ height:100%; }
+
+  html,body{ background:var(--bg); }
+  .reveal .backgrounds{ background:
+     radial-gradient(1200px 700px at 78% -8%, #1c2c44 0%, transparent 60%),
+     radial-gradient(900px 600px at 0% 110%, #16243a 0%, transparent 55%),
+     var(--bg); }
+
+  .wrap{ height:100%; display:flex; flex-direction:column; justify-content:center; padding:18px 14px; }
+  .center{ text-align:center; align-items:center; }
+  .center .lead{ margin-left:auto; margin-right:auto; }
+
+  .eyebrow{ font-family:var(--mono); font-size:.62em; letter-spacing:.14em;
+    color:var(--accent); text-transform:uppercase; margin-bottom:.6em;
+    display:flex; align-items:center; gap:.7em; }
+  .eyebrow.good{ color:var(--good); }
+  .eyebrow .num{ color:var(--muted-soft); }
+  .eyebrow .chip{ margin-left:auto; color:var(--muted); border:1px solid var(--line);
+    border-radius:999px; padding:.18em .8em; font-size:.92em; letter-spacing:.06em; }
+
+  .reveal h1{ font-size:1.95em; font-weight:800; line-height:1.12; letter-spacing:-.02em; margin:0; }
+  .reveal h2{ font-size:1.5em; font-weight:800; line-height:1.18; letter-spacing:-.02em; margin:0 0 .5em; }
+  .reveal p{ line-height:1.55; color:var(--muted); margin:.35em 0; }
+  .reveal strong{ color:var(--ink); font-weight:700; }
+  .em{ color:var(--accent); font-weight:700; }
+  .emg{ color:var(--good); font-weight:700; }
+  .lead{ font-size:1.05em; color:var(--muted); max-width:21em; }
+
+  .title-tag{ font-family:var(--mono); color:var(--accent); letter-spacing:.2em;
+    font-size:.7em; text-transform:uppercase; }
+  .src{ margin-top:1.4em; font-family:var(--mono); font-size:.6em; color:var(--muted-soft); }
+
+  /* list cards */
+  .cards{ display:grid; gap:.8em; margin-top:.4em; }
+  .cards.c2{ grid-template-columns:1fr 1fr; }
+  .card{ background:var(--surface); border:1px solid var(--line); border-radius:14px;
+    padding:.9em 1.1em; }
+  .card.accent{ border-left:3px solid var(--accent); }
+  .card.good{ border-left:3px solid var(--good); }
+  .card h3{ margin:0 0 .5em; font-size:.92em; font-weight:700; display:flex; align-items:center; gap:.5em; }
+  .card h3 .mn{ font-family:var(--mono); font-size:.7em; color:var(--accent); }
+  .card.good h3 .mn{ color:var(--good); }
+  ul.clean{ list-style:none; margin:0; padding:0; }
+  ul.clean li{ position:relative; padding:.4em 0 .4em 1.1em; font-size:.82em; line-height:1.45;
+    color:#d3dbe8; border-bottom:1px solid #1c2841; }
+  ul.clean li:last-child{ border-bottom:none; }
+  ul.clean li::before{ content:"›"; position:absolute; left:.1em; color:var(--accent); font-weight:700; }
+  .card.good ul.clean li::before{ color:var(--good); }
+  ul.clean li small{ display:block; color:var(--muted); font-size:.82em; margin-top:.1em; }
+
+  .pillrow{ margin-top:1em; }
+  .pill{ display:inline-block; font-family:var(--mono); font-size:.62em;
+    background:var(--accent-soft); color:var(--accent); border:1px solid #f5b54433;
+    border-radius:7px; padding:.3em .7em; margin:0 .35em .45em 0; }
+  .pill.g{ background:var(--good-soft); color:var(--good); border-color:#5bc8a633; }
+
+  .banner{ background:var(--good-soft); border:1px solid #5bc8a633; border-left:3px solid var(--good);
+    border-radius:14px; padding:1em 1.2em; margin-top:.6em; }
+  .banner p{ margin:0; color:#d6e4df; font-size:.95em; line-height:1.6; }
+
+  .quote{ font-size:1.15em; line-height:1.6; color:#e7edf5; max-width:20em; }
+  .quote .em{ color:var(--accent); } .quote .emg{ color:var(--good); }
+
+  .note{ color:var(--muted-soft); font-size:.62em; font-family:var(--mono); margin-top:1.1em; }
+
+  .reveal .progress{ color:var(--accent); height:4px; }
+  .reveal .controls{ color:var(--muted); }
+  .mark{ position:fixed; bottom:14px; left:18px; font-family:var(--mono);
+    font-size:12px; color:var(--muted-soft); letter-spacing:.08em; z-index:30; }
+</style>
+</head>
+<body>
+<div class="mark">면접준비 스터디 · 요즘 구인 조건</div>
+<div class="reveal"><div class="slides">
+
+<!-- 1. TITLE -->
+<section>
+  <div class="wrap">
+    <div class="title-tag">DEV JOB MARKET · 2026</div>
+    <h1>요즘 공고는<br>어떤 기술을 <span class="em">원할까?</span></h1>
+    <p class="lead" style="margin-top:.5em">전국 신입·주니어 공고를 모아서, 자주 나오는 필수 기술과 우대사항을 정리했어요.</p>
+    <div class="src">// 원티드 · 잡코리아 · 사람인 · 점핏 · 인크루트 종합</div>
+  </div>
+</section>
+
+<!-- 2. 마음 편하게 -->
+<section>
+  <div class="wrap center">
+    <div class="eyebrow good" style="justify-content:center"><span class="num">00</span> 시작 전에</div>
+    <h1>다 갖춰야<br>지원할 수 있는 건 <span class="emg">아니에요</span></h1>
+    <p class="lead">공고의 모든 줄을 채워야 합격하는 게 아니에요. 회사도 신입이 다 갖췄을 거라 기대하지 않아요. "지금 우리가 어디쯤인지" 확인하는 용도로 봐요.</p>
+  </div>
+</section>
+
+<!-- 3. 요즘 원하는 기술 1 -->
+<section>
+  <div class="wrap">
+    <div class="eyebrow"><span class="num">01</span> 요즘 원하는 기술 <span class="chip">필수 · 기본기</span></div>
+    <h2>언어 · 프레임워크</h2>
+    <div class="cards c2">
+      <div class="card accent">
+        <h3><span class="mn">BACK / APP</span></h3>
+        <ul class="clean">
+          <li>백엔드 <strong>Java + Spring / Spring Boot</strong><small>JPA 이해까지 자주 언급</small></li>
+          <li>모바일 <strong>Flutter / React Native</strong></li>
+        </ul>
+      </div>
+      <div class="card accent">
+        <h3><span class="mn">FRONT</span></h3>
+        <ul class="clean">
+          <li><strong>JavaScript (ES6+) + React</strong><small>Vue도 자주, HTML5·CSS3는 기본</small></li>
+          <li>SSR / SPA, 상태관리</li>
+        </ul>
+      </div>
+    </div>
+    <p class="lead" style="margin-top:.7em">하나하나 완벽할 필요 없어요. <span class="emg">이름이 익숙하고 설명할 수 있으면</span> 출발선은 통과.</p>
+  </div>
+</section>
+
+<!-- 4. 요즘 원하는 기술 2 -->
+<section>
+  <div class="wrap">
+    <div class="eyebrow"><span class="num">01</span> 요즘 원하는 기술 <span class="chip">필수 · 기본기</span></div>
+    <h2>데이터 · 협업 · CS 기초</h2>
+    <div class="cards c2">
+      <div class="card accent">
+        <h3><span class="mn">DATA / API</span></h3>
+        <ul class="clean">
+          <li><strong>RDBMS</strong> (MySQL / Oracle), SQL 작성</li>
+          <li><strong>REST API</strong> 설계·개발 이해</li>
+        </ul>
+      </div>
+      <div class="card accent">
+        <h3><span class="mn">BASE</span></h3>
+        <ul class="clean">
+          <li><strong>Git</strong> 기반 협업</li>
+          <li><strong>CS 기초</strong> (자료구조·OS·네트워크·DB)</li>
+        </ul>
+      </div>
+    </div>
+    <div class="pillrow">
+      <span class="pill">Java</span><span class="pill">Spring</span><span class="pill">React</span>
+      <span class="pill">Flutter</span><span class="pill">MySQL</span><span class="pill">REST API</span>
+      <span class="pill">Git</span><span class="pill">CS 기초</span>
+    </div>
+    <p class="note">// 신입은 실무 경력 대신 프로젝트·부트캠프·GitHub·기술블로그로 증명</p>
+  </div>
+</section>
+
+<!-- 5. 우대사항 1 -->
+<section>
+  <div class="wrap">
+    <div class="eyebrow good"><span class="num">02</span> 우대사항 <span class="chip">있으면 좋은 것</span></div>
+    <h2>인프라 · 운영</h2>
+    <div class="cards c2">
+      <div class="card good">
+        <h3><span class="mn">INFRA</span></h3>
+        <ul class="clean">
+          <li><strong>Docker</strong> / 컨테이너</li>
+          <li><strong>AWS</strong> 등 클라우드 배포</li>
+        </ul>
+      </div>
+      <div class="card good">
+        <h3><span class="mn">QUALITY</span></h3>
+        <ul class="clean">
+          <li>CI/CD, 테스트 코드(TDD)</li>
+          <li>대용량·성능 최적화 경험</li>
+        </ul>
+      </div>
+    </div>
+    <p class="lead" style="margin-top:.7em">없다고 떨어지는 게 아니라, <span class="emg">있으면 남들과 벌어지는 지점</span>이에요.</p>
+  </div>
+</section>
+
+<!-- 6. 우대사항 2 -->
+<section>
+  <div class="wrap">
+    <div class="eyebrow good"><span class="num">02</span> 우대사항 <span class="chip">있으면 좋은 것</span></div>
+    <h2>설계 · 협업 · AI</h2>
+    <div class="cards c2">
+      <div class="card good">
+        <h3><span class="mn">DESIGN</span></h3>
+        <ul class="clean">
+          <li><strong>MSA</strong> / 아키텍처 설계 관심</li>
+          <li>TypeScript, NoSQL(Redis 등)</li>
+        </ul>
+      </div>
+      <div class="card good">
+        <h3><span class="mn">COLLAB / AI</span></h3>
+        <ul class="clean">
+          <li>코드리뷰·문서화 경험</li>
+          <li><strong>AI 개발도구 활용</strong><small>Claude Code, Cursor 등을 우대사항에 적는 공고가 늘고 있음</small></li>
+        </ul>
+      </div>
+    </div>
+    <div class="pillrow">
+      <span class="pill g">Docker</span><span class="pill g">AWS</span><span class="pill g">CI/CD</span>
+      <span class="pill g">테스트코드</span><span class="pill g">TypeScript</span><span class="pill g">MSA</span>
+      <span class="pill g">AI 도구 활용</span>
+    </div>
+    <p class="note">// 우대사항은 전부 채우는 게 아니라, 내 강점이 될 한두 개를 고르는 칸</p>
+  </div>
+</section>
+
+<!-- 7. 핵심 메시지 -->
+<section>
+  <div class="wrap center">
+    <div class="eyebrow good" style="justify-content:center"><span class="num">03</span> 핵심</div>
+    <h1>공고는 <span class="em">"이상적인 후보"</span>를<br>적어둔 거예요</h1>
+    <p class="lead">그 모든 걸 갖춘 신입은 거의 없고, 회사도 그걸 알아요. 필수에서 기본기를 보여주고, 우대사항 중 한두 개에 내 경험을 얹으면 충분히 경쟁력 있어요.</p>
+  </div>
+</section>
+
+<!-- 8. 필수가 빡센 공고는? -->
+<section>
+  <div class="wrap">
+    <div class="eyebrow"><span class="num">03</span> 그런데</div>
+    <h2>필수 요건이 잔뜩인 공고는?</h2>
+    <div class="banner">
+      <p>그런 곳도 보통은 전부를 기대하기보다 <span class="emg">핵심 2~3개</span>를 봐요. "이 중 하나 이상" 식으로 적힌 경우도 많고요. 정말 모든 걸 빡빡하게 요구하는 곳은 신입에겐 난이도가 높은 자리니, 거기 하나에 매이지 말고 <span class="emg">통과 가능한 공고부터</span> 노리면 돼요.</p>
+    </div>
+    <p class="lead" style="margin-top:.7em">모든 공고가 <span class="em">내 타겟일 필요는 없어요.</span></p>
+  </div>
+</section>
+
+<!-- 9. 그래서 우리는 -->
+<section>
+  <div class="wrap center">
+    <div class="eyebrow good" style="justify-content:center"><span class="num">04</span> 그래서 우리는</div>
+    <h1>빈 칸을 <span class="emg">같이 채우는</span> 게<br>이 스터디예요</h1>
+    <p class="lead">기본기는 전원이 다지고, 우대사항은 각자 강점 될 걸 골라서 파면 돼요. 빈 칸이 보여도 괜찮아요.</p>
+  </div>
+</section>
+
+</div></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.1.0/reveal.min.js"></script>
+<script>
+  Reveal.initialize({
+    hash:true, slideNumber:'c/t', transition:'slide', transitionSpeed:'fast',
+    width:1280, height:720, margin:0.04, controls:true, progress:true
+  });
+</script>
+</body>
+</html>
