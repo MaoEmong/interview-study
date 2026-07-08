@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CS 면접 Q&A 정리본 · 270문항</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#FBFAF6;
+  --card:#FFFFFF;
+  --ink:#20242C;
+  --ink-soft:#5A6270;
+  --line:#E4E2D9;
+  --accent:#0E5E52;       /* 진한 청록 — 스터디 잉크 */
+  --accent-soft:#E3F0ED;
+  --marker:#FFEC8B;       /* 형광펜 */
+  --marker-soft:#FFF7CF;
+  --danger:#B4452F;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  font-family:"IBM Plex Sans KR",-apple-system,"Apple SD Gothic Neo",sans-serif;
+  background:var(--paper);color:var(--ink);
+  font-size:15.5px;line-height:1.65;
+  -webkit-font-smoothing:antialiased;
+}
+.mono{font-family:"IBM Plex Mono",monospace}
+
+/* ── Header ── */
+header{
+  border-bottom:2px solid var(--ink);
+  background:var(--paper);
+  padding:28px 20px 20px;
+}
+.header-inner{max-width:860px;margin:0 auto}
+.eyebrow{
+  font-family:"IBM Plex Mono",monospace;
+  font-size:11.5px;letter-spacing:.14em;color:var(--accent);
+  text-transform:uppercase;font-weight:600;margin-bottom:8px;
+}
+h1{font-size:clamp(24px,5vw,34px);font-weight:700;letter-spacing:-.02em;line-height:1.25}
+h1 .hl{
+  background:linear-gradient(transparent 58%, var(--marker) 58%, var(--marker) 92%, transparent 92%);
+  padding:0 2px;
+}
+.header-meta{margin-top:10px;font-size:13px;color:var(--ink-soft)}
+.header-meta b{color:var(--ink)}
+
+/* ── Toolbar ── */
+.toolbar{
+  position:sticky;top:0;z-index:50;
+  background:rgba(251,250,246,.94);
+  backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--line);
+}
+.toolbar-inner{max-width:860px;margin:0 auto;padding:12px 20px}
+.search-row{display:flex;gap:8px;align-items:center}
+.search-box{
+  flex:1;display:flex;align-items:center;gap:8px;
+  background:var(--card);border:1.5px solid var(--line);border-radius:10px;
+  padding:9px 12px;transition:border-color .15s;
+}
+.search-box:focus-within{border-color:var(--accent)}
+.search-box svg{flex:none;color:var(--ink-soft)}
+.search-box input{
+  flex:1;border:none;outline:none;background:transparent;
+  font:inherit;font-size:14.5px;color:var(--ink);
+}
+.quiz-toggle{
+  flex:none;display:flex;align-items:center;gap:7px;
+  border:1.5px solid var(--line);border-radius:10px;
+  background:var(--card);padding:9px 13px;cursor:pointer;
+  font:inherit;font-size:13.5px;font-weight:600;color:var(--ink-soft);
+  transition:all .15s;white-space:nowrap;
+}
+.quiz-toggle .dot{width:8px;height:8px;border-radius:50%;background:var(--line);transition:background .15s}
+.quiz-toggle.on{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
+.quiz-toggle.on .dot{background:var(--accent)}
+.chips{
+  display:flex;gap:6px;overflow-x:auto;margin-top:10px;padding-bottom:2px;
+  scrollbar-width:none;
+}
+.chips::-webkit-scrollbar{display:none}
+.chip{
+  flex:none;font:inherit;font-size:12.5px;font-weight:500;
+  padding:5px 11px;border-radius:999px;
+  border:1px solid var(--line);background:var(--card);color:var(--ink-soft);
+  cursor:pointer;transition:all .12s;
+}
+.chip.active{background:var(--ink);color:#fff;border-color:var(--ink)}
+.count-note{font-family:"IBM Plex Mono",monospace;font-size:11.5px;color:var(--ink-soft);margin-top:8px}
+
+/* ── Sections ── */
+main{max-width:860px;margin:0 auto;padding:8px 20px 80px}
+.section{margin-top:36px}
+.section-head{
+  display:flex;align-items:baseline;gap:10px;
+  padding-bottom:8px;border-bottom:2px solid var(--ink);margin-bottom:14px;
+}
+.section-num{
+  font-family:"IBM Plex Mono",monospace;font-size:12px;font-weight:600;
+  color:var(--accent);letter-spacing:.06em;
+}
+.section-title{font-size:19px;font-weight:700;letter-spacing:-.01em}
+.section-count{margin-left:auto;font-family:"IBM Plex Mono",monospace;font-size:11.5px;color:var(--ink-soft)}
+
+/* ── Q&A card ── */
+.qa{
+  background:var(--card);border:1px solid var(--line);border-radius:12px;
+  margin-bottom:10px;overflow:hidden;
+}
+.qa-q{
+  width:100%;display:flex;gap:12px;align-items:flex-start;
+  padding:14px 16px;background:none;border:none;cursor:pointer;
+  font:inherit;text-align:left;color:var(--ink);
+}
+.qa-num{
+  flex:none;font-family:"IBM Plex Mono",monospace;font-size:12px;font-weight:600;
+  color:var(--accent);margin-top:2.5px;min-width:30px;
+}
+.qa-qtext{flex:1;font-weight:600;font-size:15px;line-height:1.55}
+.qa-caret{
+  flex:none;margin-top:4px;color:var(--ink-soft);
+  transition:transform .18s;
+}
+.qa.open .qa-caret{transform:rotate(180deg)}
+.qa-a{display:none;padding:0 16px 15px 58px;color:var(--ink);font-size:14.5px;white-space:pre-line}
+.qa.open .qa-a{display:block}
+.qa-a::before{
+  content:"A";
+  display:inline-block;font-family:"IBM Plex Mono",monospace;
+  font-size:11px;font-weight:600;color:#8A7A1E;
+  background:var(--marker);border-radius:4px;
+  padding:1px 6px;margin-right:8px;vertical-align:1px;
+}
+mark{background:var(--marker);color:inherit;border-radius:2px;padding:0 1px}
+
+/* quiz mode: 답 흐리게 → 탭하면 표시 */
+body.quiz .qa-a{filter:blur(6px);cursor:pointer;transition:filter .15s;user-select:none}
+body.quiz .qa-a.revealed{filter:none;user-select:auto;cursor:default}
+
+.empty{
+  text-align:center;color:var(--ink-soft);padding:60px 0;font-size:14px;display:none;
+}
+.empty .mono{color:var(--accent)}
+
+.top-btn{
+  position:fixed;right:18px;bottom:18px;z-index:60;
+  width:42px;height:42px;border-radius:50%;
+  background:var(--ink);color:#fff;border:none;cursor:pointer;
+  font-size:18px;display:none;align-items:center;justify-content:center;
+  box-shadow:0 4px 14px rgba(0,0,0,.18);
+}
+.top-btn.show{display:flex}
+
+@media (max-width:560px){
+  .qa-a{padding-left:16px}
+  .quiz-toggle span.label{display:none}
+}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *{transition:none!important}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="eyebrow">Interview Study · CS Fundamentals</div>
+    <h1>CS 면접 <span class="hl">Q&amp;A 정리본</span></h1>
+    <div class="header-meta"><b>270문항</b> · 21개 파트 · Java / Spring / JPA / DB / 네트워크 / 프론트 / 인프라</div>
+  </div>
+</header>
+
+<div class="toolbar">
+  <div class="toolbar-inner">
+    <div class="search-row">
+      <div class="search-box">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <input id="search" type="text" placeholder="질문·답변 검색 (예: N+1, 트랜잭션, JWT)" autocomplete="off">
+      </div>
+      <button class="quiz-toggle" id="quizBtn" title="답변을 가리고 셀프 퀴즈">
+        <span class="dot"></span><span class="label">면접 모드</span>
+      </button>
+    </div>
+    <div class="chips" id="chips"></div>
+    <div class="count-note" id="countNote"></div>
+  </div>
+</div>
+
+<main id="main"></main>
+<div class="empty" id="empty">검색 결과가 없습니다 <span class="mono">:(</span><br>다른 키워드로 시도해보세요.</div>
+<button class="top-btn" id="topBtn" aria-label="맨 위로">↑</button>
+
+<script>
+const DATA = [
+{t:"Java",items:[
+[1,"객체지향 특징 4가지는 무엇인가요?","캡슐화, 상속, 추상화, 다형성입니다.\n캡슐화는 데이터와 기능을 묶고 외부 접근을 제한하는 것입니다.\n상속은 부모 클래스의 기능을 자식 클래스가 재사용하거나 확장하는 것입니다.\n추상화는 필요한 특징만 드러내고 내부 구현을 숨기는 것입니다.\n다형성은 같은 메서드 호출이라도 실제 객체에 따라 다르게 동작하는 것입니다."],
+[2,"클래스와 객체의 차이는 무엇인가요?","클래스는 객체를 만들기 위한 설계도이고, 객체는 클래스를 바탕으로 실제 메모리에 생성된 인스턴스입니다."],
+[3,"오버로딩과 오버라이딩의 차이는 무엇인가요?","오버로딩은 같은 이름의 메서드를 매개변수 개수나 타입을 다르게 해서 여러 개 정의하는 것입니다.\n오버라이딩은 부모 클래스나 인터페이스의 메서드를 자식 클래스에서 재정의하는 것입니다."],
+[4,"추상 클래스와 인터페이스의 차이는 무엇인가요?","추상 클래스는 공통 필드나 구현 메서드를 가질 수 있고, 일부 메서드는 자식 클래스가 구현하게 할 수 있습니다.\n인터페이스는 구현해야 할 기능의 규칙이나 계약을 정의하는 데 가깝습니다."],
+[5,"인터페이스를 사용하는 이유는 무엇인가요?","구현 클래스가 반드시 제공해야 하는 기능의 규칙을 정의하기 위해 사용합니다. 구현체가 바뀌어도 사용하는 쪽은 같은 인터페이스만 바라볼 수 있어 결합도를 낮출 수 있습니다."],
+[6,"JVM, JRE, JDK의 차이는 무엇인가요?","JDK는 Java 개발 도구 전체입니다. JRE는 Java 실행 환경입니다. JVM은 Java 바이트코드를 실행하는 가상 머신입니다."],
+[7,"checked exception과 unchecked exception의 차이는 무엇인가요?","checked exception은 컴파일 시점에 예외 처리를 강제하는 예외입니다.\nunchecked exception은 RuntimeException 계열로 컴파일러가 예외 처리를 강제하지 않습니다."],
+[8,"접근제어자의 범위는 어떻게 되나요?","접근 범위가 넓은 순서는 public → protected → default → private입니다."],
+[9,"static이란 무엇인가요?","static은 객체를 생성하지 않아도 클래스 이름으로 접근할 수 있는 키워드입니다. static 변수나 메서드는 객체마다 따로 생기는 것이 아니라 클래스 단위로 공유됩니다."],
+[10,"final 키워드는 어디에 사용하나요?","변수에 붙이면 재할당할 수 없습니다. 메서드에 붙이면 오버라이딩할 수 없습니다. 클래스에 붙이면 상속할 수 없습니다."],
+[11,"this란 무엇인가요?","this는 현재 객체 자기 자신을 가리키는 참조입니다."],
+[12,"super란 무엇인가요?","super는 부모 클래스를 가리키는 참조입니다. 부모 클래스의 생성자나 메서드를 호출할 때 사용합니다."],
+[13,"abstract란 무엇인가요?","abstract는 미완성된 클래스나 메서드를 정의할 때 사용합니다. 추상 메서드는 선언만 있고 구현은 자식 클래스에서 해야 합니다."],
+[14,"static final은 언제 사용하나요?","변하지 않는 상수를 정의할 때 사용합니다."],
+[15,"Java의 Object 클래스란 무엇인가요?","Java의 모든 클래스가 기본적으로 상속받는 최상위 클래스입니다. 대표 메서드로 toString(), equals(), hashCode()가 있습니다."],
+[16,"toString()은 왜 오버라이딩하나요?","객체 정보를 사람이 읽기 쉬운 문자열로 표현하기 위해 오버라이딩합니다."],
+[17,"==과 equals()의 차이는 무엇인가요?","==는 참조 주소를 비교합니다. equals()는 객체의 내용을 비교하도록 재정의해서 사용할 수 있습니다."],
+[18,"hashCode()와 equals()는 왜 같이 재정의해야 하나요?","HashMap, HashSet 같은 자료구조는 객체 비교에 hashCode()와 equals()를 함께 사용하기 때문입니다. equals()로 같은 객체라면 hashCode()도 같아야 합니다."],
+[19,"Wrapper Class란 무엇인가요?","기본 타입을 객체처럼 다룰 수 있게 감싼 클래스입니다. 예를 들어 int의 Wrapper Class는 Integer입니다."],
+[20,"Boxing과 Unboxing이란 무엇인가요?","Boxing은 기본 타입을 Wrapper 객체로 변환하는 것입니다. Unboxing은 Wrapper 객체를 기본 타입으로 변환하는 것입니다."],
+[21,"String을 ==로 비교하면 안 되는 이유는 무엇인가요?","==는 문자열 내용이 아니라 참조 주소를 비교하기 때문입니다. 문자열 내용 비교는 equals()를 사용해야 합니다."],
+[22,"Java에서 Optional이란 무엇인가요?","null일 수 있는 값을 감싸는 객체입니다. 값이 없을 수 있음을 명시적으로 표현하고 NullPointerException을 줄이기 위해 사용합니다."],
+[23,"NullPointerException이란 무엇인가요?","null인 객체의 필드나 메서드에 접근하려 할 때 발생하는 런타임 예외입니다."],
+[24,"Java Stream이란 무엇인가요?","컬렉션 데이터를 함수형 방식으로 처리할 수 있게 해주는 API입니다."],
+[25,"Stream의 map과 filter 차이는 무엇인가요?","map은 데이터를 다른 형태로 변환할 때 사용합니다. filter는 조건에 맞는 데이터만 걸러낼 때 사용합니다."],
+[26,"Lambda란 무엇인가요?","익명 함수를 간결하게 표현하는 문법입니다. Java에서는 함수형 인터페이스를 구현할 때 사용할 수 있습니다."],
+[27,"제네릭이란 무엇인가요?","클래스나 메서드에서 사용할 타입을 미리 고정하지 않고, 사용할 때 타입을 지정할 수 있게 하는 기능입니다. 타입 안정성을 높이고 형변환 실수를 줄입니다."],
+[28,"synchronized란 무엇인가요?","여러 스레드가 동시에 같은 코드나 객체에 접근하지 못하게 막는 동기화 키워드입니다."],
+[29,"Race Condition이란 무엇인가요?","여러 스레드가 같은 자원에 동시에 접근하면서 실행 순서에 따라 결과가 달라지는 문제입니다."],
+[30,"Thread-safe란 무엇인가요?","여러 스레드가 동시에 접근해도 데이터가 깨지지 않고 안전하게 동작하는 상태를 의미합니다."]
+]},
+{t:"메모리 / JVM / GC",items:[
+[31,"Stack과 Heap의 차이는 무엇인가요?","Stack은 메서드 호출, 지역 변수, 참조 변수 등이 저장되는 영역입니다. Heap은 객체가 저장되는 영역입니다."],
+[32,"JVM 메모리 구조를 설명해주세요.","JVM 메모리는 Method Area, Heap, Stack, PC Register, Native Method Stack 등으로 나뉩니다. Heap은 객체 저장, Stack은 메서드 호출과 지역 변수 저장, Method Area는 클래스 정보와 static 정보를 저장합니다."],
+[33,"Garbage Collection이란 무엇인가요?","Heap 영역에서 더 이상 참조되지 않는 객체를 JVM이 자동으로 정리하는 기능입니다."],
+[34,"GC는 언제 일어나나요?","Heap 메모리 사용량이 증가하거나 JVM이 메모리 회수가 필요하다고 판단할 때 발생합니다. 정확한 시점은 JVM이 결정합니다."],
+[35,"String은 왜 불변인가요?","String은 한 번 생성되면 내부 값을 바꿀 수 없는 불변 객체입니다. 문자열 수정 시 기존 객체가 바뀌는 것이 아니라 새로운 객체가 만들어집니다. 문자열 재사용, 보안, 멀티스레드 안정성에 장점이 있습니다."],
+[36,"StringBuilder와 StringBuffer의 차이는 무엇인가요?","StringBuilder는 동기화를 지원하지 않아 빠르지만 멀티스레드 환경에서는 안전하지 않을 수 있습니다. StringBuffer는 동기화를 지원해서 멀티스레드 환경에서 안전하지만 상대적으로 느릴 수 있습니다."]
+]},
+{t:"자료구조 / 컬렉션",items:[
+[37,"Array와 List의 차이는 무엇인가요?","Array는 크기가 고정되어 있고, List는 크기가 동적으로 변할 수 있습니다."],
+[38,"ArrayList와 LinkedList의 차이는 무엇인가요?","ArrayList는 배열 기반이라 인덱스 조회가 빠르지만 중간 삽입·삭제 비용이 큽니다. LinkedList는 노드 연결 구조라 중간 삽입·삭제는 유리할 수 있지만 조회는 느릴 수 있습니다."],
+[39,"HashMap이란 무엇인가요?","key-value 형태로 데이터를 저장하는 자료구조입니다. key를 이용해 value를 빠르게 조회할 수 있습니다."],
+[40,"List, Set, Map의 차이는 무엇인가요?","List는 순서가 있고 중복을 허용합니다. Set은 중복을 허용하지 않습니다. Map은 key-value 구조이고 key는 중복될 수 없습니다."],
+[41,"HashSet은 중복을 어떻게 판단하나요?","hashCode()와 equals()를 이용해 중복을 판단합니다."]
+]},
+{t:"Spring / Spring Boot",items:[
+[42,"Spring Framework를 사용하는 이유는 무엇인가요?","객체 생성과 의존성 관리를 Spring 컨테이너가 대신 처리해주기 때문입니다. DI를 통해 결합도를 낮추고, 트랜잭션, 보안, MVC, 데이터 접근 기능을 일관되게 사용할 수 있습니다."],
+[43,"IoC란 무엇인가요?","제어의 역전입니다. 객체의 생성과 생명주기를 개발자가 직접 관리하지 않고 Spring 컨테이너가 관리하는 것을 의미합니다."],
+[44,"DI란 무엇인가요?","의존성 주입입니다. 필요한 객체를 클래스 내부에서 직접 생성하지 않고 외부에서 주입받는 방식입니다."],
+[45,"Spring Bean이란 무엇인가요?","Spring 컨테이너가 생성하고 관리하는 객체입니다."],
+[46,"같은 타입의 Bean이 여러 개 있으면 어떻게 하나요?","@Primary로 기본 Bean을 지정하거나 @Qualifier로 원하는 Bean을 명시해서 주입 대상을 정할 수 있습니다."],
+[47,"@Component, @Service, @Repository의 차이는 무엇인가요?","모두 Bean 등록 대상입니다. @Component는 일반 컴포넌트, @Service는 비즈니스 로직 계층, @Repository는 DB 접근 계층을 나타냅니다."],
+[48,"생성자 주입을 권장하는 이유는 무엇인가요?","필수 의존성을 명확히 할 수 있고, final 사용이 가능하며, 테스트와 유지보수에 유리합니다. 순환 참조 문제도 더 빨리 발견할 수 있습니다."],
+[49,"필드 주입의 단점은 무엇인가요?","테스트가 어렵고, 객체가 어떤 의존성을 필요로 하는지 명확하지 않습니다. 그래서 생성자 주입을 권장합니다."],
+[50,"Spring MVC 요청 처리 흐름을 설명해주세요.","요청 → DispatcherServlet → Controller → Service → Repository → DB → 응답 순서입니다."],
+[51,"Controller, Service, Repository를 나누는 이유는 무엇인가요?","책임을 분리하기 위해서입니다. Controller는 요청·응답, Service는 비즈니스 로직, Repository는 DB 접근을 담당합니다."],
+[52,"@Controller와 @RestController의 차이는 무엇인가요?","@Controller는 주로 View를 반환할 때 사용합니다. @RestController는 JSON 같은 응답 본문을 반환할 때 사용합니다."],
+[53,"@RequestParam, @PathVariable, @RequestBody 차이는 무엇인가요?","@RequestParam은 쿼리 파라미터, @PathVariable은 URL 경로 값, @RequestBody는 요청 body의 JSON 데이터를 받을 때 사용합니다."],
+[54,"Spring Boot의 장점은 무엇인가요?","내장 Tomcat, 자동 설정, starter 의존성을 제공해서 빠르게 애플리케이션을 구성할 수 있습니다."],
+[55,"AOP란 무엇인가요?","관점 지향 프로그래밍입니다. 로깅, 트랜잭션, 권한 체크처럼 여러 곳에서 반복되는 공통 관심사를 핵심 로직과 분리하는 방식입니다."],
+[56,"AOP는 언제 사용하나요?","로깅, 트랜잭션, 권한 체크, 실행 시간 측정처럼 여러 계층에 반복되는 공통 기능을 분리할 때 사용합니다."],
+[57,"Filter와 Interceptor의 차이는 무엇인가요?","Filter는 Spring MVC에 들어오기 전 Servlet 영역에서 동작합니다. Interceptor는 DispatcherServlet 이후 Controller 호출 전후에 동작합니다."],
+[58,"Spring Security는 어떻게 동작하나요?","Filter Chain 기반으로 동작합니다. 요청이 Controller에 도달하기 전에 여러 보안 Filter를 거치며 인증과 인가를 처리합니다."],
+[59,"@Value는 무엇인가요?","설정 파일의 값을 Bean에 주입할 때 사용하는 어노테이션입니다."],
+[60,"application.yml과 application.properties는 무엇인가요?","Spring Boot 설정 파일입니다. 서버 포트, DB 연결 정보, 로그 설정, 외부 API 설정 등을 관리합니다."],
+[61,"Profile이란 무엇인가요?","개발, 테스트, 운영 환경별로 설정을 나누기 위해 사용하는 기능입니다."],
+[62,"@Configuration이란 무엇인가요?","설정 클래스를 나타내는 어노테이션입니다. 내부에서 @Bean 메서드를 통해 Bean을 직접 등록할 수 있습니다."],
+[63,"@Bean과 @Component 차이는 무엇인가요?","@Component는 클래스 자체를 컴포넌트 스캔으로 Bean 등록합니다. @Bean은 설정 클래스에서 메서드 반환 객체를 Bean으로 등록합니다."],
+[64,"@Autowired란 무엇인가요?","Spring Bean을 자동으로 주입받기 위해 사용하는 어노테이션입니다."],
+[65,"Spring Bean Scope란 무엇인가요?","Bean이 생성되고 유지되는 범위입니다. 기본 Scope는 singleton입니다."],
+[66,"Singleton Bean에서 주의할 점은 무엇인가요?","하나의 객체를 여러 요청이 공유하므로 변경 가능한 상태를 필드에 저장하면 동시성 문제가 생길 수 있습니다."],
+[67,"Spring에서 Validation은 어떻게 하나요?","DTO에 @NotNull, @NotBlank, @Size, @Email 같은 검증 어노테이션을 붙이고 Controller에서 @Valid 또는 @Validated를 사용합니다."],
+[68,"@ControllerAdvice란 무엇인가요?","여러 Controller에서 발생하는 예외를 한 곳에서 공통 처리하기 위한 기능입니다."],
+[69,"@Transactional은 어디에 붙이는 것이 좋나요?","보통 Service 계층에 붙입니다. Service 메서드가 하나의 비즈니스 작업 단위가 되는 경우가 많기 때문입니다."],
+[70,"@Transactional(readOnly = true)는 왜 사용하나요?","조회 전용 트랜잭션임을 명시하고 불필요한 변경 감지 비용을 줄이는 데 도움이 됩니다."],
+[71,"@Transactional이 동작하지 않는 경우는 언제인가요?","같은 클래스 내부 메서드끼리 직접 호출하면 프록시를 거치지 않아 적용되지 않을 수 있습니다."],
+[72,"Controller에서 Entity를 바로 받으면 왜 안 좋나요?","외부 요청이 DB 구조와 직접 연결되고, 필요 없는 필드까지 바인딩될 수 있습니다. 요청 DTO를 따로 두는 것이 좋습니다."],
+[73,"Service에서 DTO를 반환해도 되나요?","가능합니다. API 응답에 필요한 데이터만 내려주기 위해 Service에서 DTO로 변환해 반환할 수 있습니다."],
+[74,"Repository는 왜 인터페이스로 만드나요?","Spring Data JPA가 Repository 인터페이스의 구현체를 자동으로 생성해주기 때문입니다."],
+[75,"findById()는 왜 Optional을 반환하나요?","ID로 조회했을 때 데이터가 없을 수 있기 때문입니다."]
+]},
+{t:"JPA / Hibernate",items:[
+[76,"JPA를 사용하는 이유는 무엇인가요?","객체 중심으로 DB를 다룰 수 있고, 반복적인 SQL 작성 부담을 줄여줍니다. 다만 실제 실행 SQL을 이해하면서 사용해야 합니다."],
+[77,"ORM이란 무엇인가요?","Object Relational Mapping입니다. 객체와 관계형 데이터베이스 테이블을 매핑해주는 기술입니다."],
+[78,"JPA와 Hibernate의 차이는 무엇인가요?","JPA는 Java ORM 표준이고, Hibernate는 JPA의 대표적인 구현체입니다."],
+[79,"영속성 컨텍스트란 무엇인가요?","JPA가 엔티티를 관리하는 공간입니다. 1차 캐시, 변경 감지, 쓰기 지연 등이 동작합니다."],
+[80,"1차 캐시란 무엇인가요?","영속성 컨텍스트 안에 있는 캐시입니다. 같은 트랜잭션 안에서 같은 엔티티를 다시 조회하면 DB가 아니라 1차 캐시에서 가져올 수 있습니다."],
+[81,"더티 체킹이란 무엇인가요?","JPA가 영속 상태 엔티티의 변경 사항을 감지해서 트랜잭션 커밋 시점에 자동으로 UPDATE 쿼리를 실행하는 기능입니다."],
+[82,"save를 안 해도 update가 되나요?","트랜잭션 안에서 조회한 영속 상태 엔티티라면 값을 변경하는 것만으로도 커밋 시점에 update가 됩니다."],
+[83,"더티 체킹이 동작하는 조건은 무엇인가요?","엔티티가 영속 상태여야 하고, 트랜잭션 범위 안이어야 하며, 커밋이나 flush가 발생해야 합니다."],
+[84,"지연 로딩과 즉시 로딩의 차이는 무엇인가요?","지연 로딩은 연관 엔티티를 실제 사용할 때 조회합니다. 즉시 로딩은 엔티티 조회 시 연관 엔티티도 함께 조회합니다."],
+[85,"N+1 문제란 무엇인가요?","처음 1번의 쿼리로 목록을 가져온 뒤, 각 데이터의 연관 객체를 조회하면서 추가 쿼리가 N번 발생하는 문제입니다."],
+[86,"N+1 문제 해결 방법은 무엇인가요?","fetch join, EntityGraph, DTO projection, batch size 설정 등을 사용할 수 있습니다."],
+[87,"Fetch Join과 EntityGraph의 차이는 무엇인가요?","Fetch Join은 JPQL에서 join fetch로 연관 데이터를 함께 가져오는 방식입니다. EntityGraph는 조회 시 함께 가져올 연관관계를 설정으로 지정하는 방식입니다."],
+[88,"Entity와 DTO를 분리하는 이유는 무엇인가요?","Entity를 그대로 노출하면 내부 구조나 민감한 정보가 노출될 수 있고, API 스펙 변경이 Entity에 영향을 줄 수 있기 때문입니다."],
+[89,"JPA를 사용할 때 주의할 점은 무엇인가요?","실제 SQL, 연관관계, 지연 로딩과 즉시 로딩, N+1 문제, 트랜잭션 범위, Entity 직접 노출을 주의해야 합니다."],
+[90,"Entity의 기본 생성자가 필요한 이유는 무엇인가요?","JPA가 리플렉션으로 Entity 객체를 생성하기 때문에 기본 생성자가 필요합니다."],
+[91,"Entity에서 Setter를 무분별하게 열면 왜 안 좋나요?","어디서든 Entity 상태를 변경할 수 있어 변경 흐름을 추적하기 어렵습니다. 의미 있는 비즈니스 메서드를 만드는 것이 좋습니다."],
+[92,"양방향 연관관계에서 연관관계의 주인은 무엇인가요?","외래 키를 관리하는 쪽입니다. 보통 @ManyToOne 쪽이 연관관계의 주인이 됩니다."],
+[93,"@ManyToOne의 기본 fetch 전략은 무엇인가요?","기본은 EAGER입니다. 실무에서는 LAZY로 명시하는 것이 좋습니다."],
+[94,"@OneToMany의 기본 fetch 전략은 무엇인가요?","기본은 LAZY입니다."],
+[95,"JPQL이란 무엇인가요?","JPA에서 Entity 객체를 대상으로 작성하는 객체지향 쿼리입니다."],
+[96,"QueryDSL은 왜 사용하나요?","타입 안정성 있게 동적 쿼리를 작성하기 위해 사용합니다. 컴파일 시점에 오류를 확인할 수 있습니다."],
+[97,"OSIV란 무엇인가요?","Open Session In View입니다. 영속성 컨텍스트를 View 렌더링 시점까지 열어두는 기능입니다. 지연 로딩이 가능하지만 DB 커넥션을 오래 잡을 수 있어 주의해야 합니다."],
+[98,"persist와 merge 차이는 무엇인가요?","persist는 새로운 엔티티를 영속 상태로 만들 때 사용합니다. merge는 준영속 상태 엔티티를 다시 영속 상태로 병합할 때 사용합니다."],
+[99,"flush란 무엇인가요?","영속성 컨텍스트의 변경 내용을 DB에 반영하는 작업입니다. flush가 일어나도 트랜잭션 commit은 아닙니다."],
+[100,"commit과 flush 차이는 무엇인가요?","flush는 SQL을 DB에 보내는 것이고, commit은 트랜잭션을 최종 확정하는 것입니다."],
+[101,"벌크 연산이란 무엇인가요?","여러 데이터를 한 번에 update 또는 delete하는 연산입니다. JPA 벌크 연산은 영속성 컨텍스트를 거치지 않아 DB와 영속성 컨텍스트 상태가 달라질 수 있습니다."],
+[102,"복합키란 무엇인가요?","두 개 이상의 컬럼을 묶어서 하나의 기본키로 사용하는 것입니다."],
+[103,"Soft Delete란 무엇인가요?","데이터를 실제로 삭제하지 않고 삭제 여부 컬럼을 변경하는 방식입니다."],
+[104,"Hard Delete란 무엇인가요?","데이터를 DB에서 실제로 삭제하는 방식입니다."]
+]},
+{t:"DB / SQL",items:[
+[105,"Primary Key와 Foreign Key를 설명해주세요.","Primary Key는 각 행을 고유하게 식별하는 값입니다. Foreign Key는 다른 테이블의 Primary Key를 참조하는 컬럼입니다."],
+[106,"JOIN이란 무엇인가요?","둘 이상의 테이블을 연결해 필요한 데이터를 함께 조회하는 방법입니다."],
+[107,"INNER JOIN과 LEFT JOIN의 차이는 무엇인가요?","INNER JOIN은 양쪽 테이블에 모두 매칭되는 데이터만 조회합니다. LEFT JOIN은 왼쪽 테이블 데이터는 모두 가져오고 오른쪽에 매칭되는 데이터가 없으면 NULL로 표시합니다."],
+[108,"인덱스란 무엇인가요?","조회 성능을 높이기 위해 사용하는 자료구조입니다."],
+[109,"인덱스를 많이 만들면 왜 안 좋나요?","INSERT, UPDATE, DELETE 시 인덱스도 함께 갱신해야 해서 쓰기 성능이 떨어질 수 있고 저장 공간도 사용합니다."],
+[110,"트랜잭션이란 무엇인가요?","여러 DB 작업을 하나의 작업 단위로 묶는 것입니다. 모두 성공하면 commit하고, 하나라도 실패하면 rollback합니다."],
+[111,"ACID란 무엇인가요?","원자성, 일관성, 격리성, 지속성입니다."],
+[112,"정규화란 무엇인가요?","데이터 중복을 줄이고 무결성을 높이기 위해 테이블을 구조화하는 과정입니다."],
+[113,"Stored Procedure란 무엇인가요?","여러 SQL 처리 로직을 DB 안에 저장해두고 필요할 때 호출해서 실행하는 기능입니다."],
+[114,"Trigger란 무엇인가요?","특정 테이블에 insert, update, delete가 발생했을 때 자동으로 실행되는 기능입니다."],
+[115,"JPA와 SQL을 함께 알아야 하는 이유는 무엇인가요?","JPA를 사용하더라도 결국 DB에서 실행되는 것은 SQL이기 때문입니다. 성능 문제를 분석하려면 SQL과 DB 동작을 이해해야 합니다."],
+[116,"DELETE, TRUNCATE, DROP의 차이는 무엇인가요?","DELETE는 행 삭제, TRUNCATE는 전체 데이터 초기화, DROP은 테이블 삭제입니다."],
+[117,"WHERE와 HAVING의 차이는 무엇인가요?","WHERE는 그룹화 전 row를 필터링합니다. HAVING은 GROUP BY 이후 그룹 결과를 필터링합니다."],
+[118,"GROUP BY란 무엇인가요?","특정 컬럼을 기준으로 데이터를 묶어서 집계할 때 사용합니다."],
+[119,"COUNT(*)와 COUNT(column)의 차이는 무엇인가요?","COUNT(*)는 전체 row 수를 셉니다. COUNT(column)은 해당 컬럼이 NULL이 아닌 row만 셉니다."],
+[120,"DB 정합성과 무결성은 무엇인가요?","정합성은 데이터가 모순 없이 정확한 상태를 유지하는 것입니다. 무결성은 데이터가 정확하고 일관된 상태를 유지하는 성질입니다."],
+[121,"DB 제약조건에는 어떤 것들이 있나요?","Primary Key, Foreign Key, Unique, Not Null, Check 등이 있습니다."],
+[122,"Unique 제약조건은 언제 사용하나요?","중복되면 안 되는 값에 사용합니다. 예를 들어 이메일, 로그인 ID, 상품 코드에 사용할 수 있습니다."],
+[123,"DB View란 무엇인가요?","특정 SELECT 쿼리 결과를 가상의 테이블처럼 사용할 수 있게 만든 것입니다."],
+[124,"SQL Injection이란 무엇인가요?","사용자 입력값을 이용해 의도하지 않은 SQL이 실행되도록 만드는 공격입니다. 파라미터 바인딩으로 방어할 수 있습니다."],
+[125,"DB Connection Pool이란 무엇인가요?","DB 연결을 미리 여러 개 만들어두고 재사용하는 방식입니다."],
+[126,"Connection Pool이 부족하면 어떤 문제가 생기나요?","DB 커넥션을 빌릴 수 없어 요청이 대기하거나 timeout이 발생할 수 있습니다."],
+[127,"실행 계획이란 무엇인가요?","DB가 SQL을 어떻게 실행할지 보여주는 계획입니다. 인덱스 사용 여부, 테이블 스캔 여부, 조인 순서 등을 확인할 수 있습니다."],
+[128,"Full Table Scan이란 무엇인가요?","조건에 맞는 데이터를 찾기 위해 테이블 전체를 읽는 방식입니다."],
+[129,"외래키를 사용하는 이유는 무엇인가요?","테이블 간 관계를 표현하고 참조 무결성을 지키기 위해 사용합니다."],
+[130,"Offset Pagination의 단점은 무엇인가요?","페이지가 뒤로 갈수록 앞의 데이터를 많이 건너뛰어야 해서 성능이 떨어질 수 있습니다."],
+[131,"Cursor Pagination이란 무엇인가요?","마지막으로 조회한 데이터의 기준값을 이용해 다음 데이터를 가져오는 방식입니다."]
+]},
+{t:"트랜잭션 격리 / 동시성",items:[
+[132,"트랜잭션 격리 수준이란 무엇인가요?","여러 트랜잭션이 동시에 실행될 때 서로의 작업을 얼마나 격리할지 정하는 기준입니다."],
+[133,"Dirty Read란 무엇인가요?","아직 commit되지 않은 데이터를 다른 트랜잭션이 읽는 현상입니다."],
+[134,"Non-repeatable Read란 무엇인가요?","같은 트랜잭션 안에서 같은 row를 두 번 읽었는데, 중간에 다른 트랜잭션이 수정해서 값이 달라지는 현상입니다."],
+[135,"Phantom Read란 무엇인가요?","같은 조건으로 다시 조회했을 때, 다른 트랜잭션의 insert나 delete 때문에 결과 row 수가 달라지는 현상입니다."],
+[136,"트랜잭션 격리 수준 4단계는 무엇인가요?","Read Uncommitted, Read Committed, Repeatable Read, Serializable입니다. 순서대로 격리 수준이 강해집니다."],
+[137,"동시성 문제란 무엇인가요?","여러 스레드나 트랜잭션이 같은 데이터를 동시에 수정할 때 예상과 다른 결과가 생기는 문제입니다."],
+[138,"왜 if문만으로 재고 음수 체크를 하면 안 되나요?","동시에 여러 요청이 들어오면 같은 재고 값을 읽고 둘 다 조건을 통과할 수 있기 때문입니다."],
+[139,"동시성 문제는 어떻게 해결하나요?","DB 트랜잭션, 비관적 락, 낙관적 락, 조건부 update 쿼리, DB 제약조건, Redis 분산 락 등을 사용할 수 있습니다."],
+[140,"조건부 update 방식이란 무엇인가요?","DB에서 조건을 걸고 update하는 방식입니다. 재고가 충분할 때만 차감하고, 반영된 row 수가 0이면 실패 처리합니다."],
+[141,"낙관적 락이란 무엇인가요?","충돌이 자주 발생하지 않는다고 보고 version 컬럼으로 수정 시점에 충돌을 감지하는 방식입니다."],
+[142,"비관적 락이란 무엇인가요?","충돌 가능성이 높다고 보고 데이터를 조회할 때부터 row를 잠그는 방식입니다."],
+[143,"낙관적 락과 비관적 락의 차이는 무엇인가요?","낙관적 락은 version으로 충돌을 감지합니다. 비관적 락은 DB row를 직접 잠가서 충돌을 막습니다."]
+]},
+{t:"HTTP / REST API",items:[
+[144,"HTTP와 HTTPS의 차이는 무엇인가요?","HTTP는 데이터를 암호화하지 않고 전송합니다. HTTPS는 HTTP에 SSL/TLS 암호화가 추가된 방식입니다."],
+[145,"HTTP는 stateless라는 말의 의미는 무엇인가요?","서버가 이전 요청 상태를 기본적으로 기억하지 않는다는 의미입니다."],
+[146,"REST API란 무엇인가요?","HTTP를 기반으로 리소스를 중심으로 설계하는 API 방식입니다. URL은 자원을 표현하고, HTTP 메서드로 행위를 구분합니다."],
+[147,"GET, POST, PUT, PATCH, DELETE의 차이는 무엇인가요?","GET은 조회, POST는 생성, PUT은 전체 수정, PATCH는 일부 수정, DELETE는 삭제입니다."],
+[148,"GET과 POST의 차이는 무엇인가요?","GET은 주로 조회에 사용하고 요청 데이터가 URL 쿼리스트링에 포함됩니다. POST는 주로 생성이나 데이터 전달에 사용하고 요청 데이터가 body에 담깁니다."],
+[149,"HTTP 상태 코드를 설명해주세요.","200은 성공, 201은 생성 성공, 400은 잘못된 요청, 401은 인증 실패, 403은 권한 없음, 404는 리소스 없음, 500은 서버 오류입니다."],
+[150,"401과 403의 차이는 무엇인가요?","401은 인증되지 않은 상태입니다. 403은 인증은 되었지만 권한이 없는 상태입니다."],
+[151,"API 응답 형식을 통일하는 이유는 무엇인가요?","프론트엔드와 협업하기 쉽고, 성공과 실패 처리를 일관되게 할 수 있기 때문입니다."],
+[152,"API 예외 처리는 어떻게 하는 것이 좋나요?","상황에 맞는 상태 코드와 일관된 응답 형식을 내려주는 것이 좋습니다. Spring에서는 @ControllerAdvice와 @ExceptionHandler를 사용할 수 있습니다."],
+[153,"URI와 URL의 차이는 무엇인가요?","URI는 자원 식별자이고, URL은 자원의 위치를 나타내는 주소입니다."],
+[154,"HTTP Header와 Body의 차이는 무엇인가요?","Header는 요청이나 응답에 대한 부가 정보입니다. Body는 실제 전송하려는 데이터입니다."],
+[155,"Content-Type이란 무엇인가요?","요청이나 응답 body의 데이터 형식을 나타내는 HTTP Header입니다."],
+[156,"Authorization Header란 무엇인가요?","인증 정보를 서버에 전달하기 위한 HTTP Header입니다."],
+[157,"Bearer Token이란 무엇인가요?","해당 토큰을 가진 사람을 인증된 사용자로 보는 방식의 토큰입니다."],
+[158,"멱등성이란 무엇인가요?","같은 요청을 여러 번 보내도 결과가 같다는 의미입니다."],
+[159,"어떤 HTTP 메서드가 멱등성을 가지나요?","GET, PUT, DELETE는 일반적으로 멱등성을 가집니다. POST는 보통 멱등하지 않습니다."],
+[160,"PUT과 PATCH 차이는 무엇인가요?","PUT은 리소스 전체 수정, PATCH는 일부 수정입니다."],
+[161,"REST API 설계 시 URI에 동사를 쓰면 안 되는 이유는 무엇인가요?","REST에서 URI는 행위가 아니라 자원을 표현해야 하기 때문입니다. 행위는 HTTP 메서드로 표현합니다."],
+[162,"API Versioning은 왜 하나요?","API 변경 시 기존 클라이언트가 깨지지 않도록 하기 위해 사용합니다."]
+]},
+{t:"인증 / 보안",items:[
+[163,"인증과 인가의 차이는 무엇인가요?","인증은 사용자가 누구인지 확인하는 과정입니다. 인가는 인증된 사용자가 특정 기능에 접근할 권한이 있는지 확인하는 과정입니다."],
+[164,"쿠키와 세션의 차이는 무엇인가요?","쿠키는 클라이언트 브라우저에 저장되는 데이터입니다. 세션은 서버에서 사용자 상태를 관리하는 방식입니다."],
+[165,"세션 기반 인증과 JWT 기반 인증의 차이는 무엇인가요?","세션은 서버가 로그인 상태를 저장하고 클라이언트는 세션 ID를 들고 다닙니다. JWT는 서버가 발급한 서명된 토큰을 클라이언트가 요청마다 보냅니다."],
+[166,"JWT는 암호화인가요?","JWT는 기본적으로 암호화가 아니라 서명된 토큰입니다. payload 내용은 볼 수 있으므로 민감한 정보를 넣으면 안 됩니다."],
+[167,"JWT는 어디에 저장하나요?","localStorage, sessionStorage, cookie 등에 저장할 수 있습니다. 보안상 HttpOnly cookie를 사용할 수 있습니다."],
+[168,"비밀번호는 DB에 어떻게 저장해야 하나요?","평문으로 저장하면 안 되고 BCrypt 같은 단방향 해시 알고리즘으로 해시해서 저장해야 합니다."],
+[169,"CORS란 무엇인가요?","서로 다른 출처 간 요청을 브라우저가 허용할지 제어하는 정책입니다."],
+[170,"CSRF란 무엇인가요?","사용자가 의도하지 않은 요청을 공격자가 대신 보내게 만드는 공격입니다."],
+[171,"XSS란 무엇인가요?","공격자가 악성 스크립트를 웹 페이지에 삽입해 사용자의 브라우저에서 실행되게 하는 공격입니다."],
+[172,"XSS와 CSRF의 차이는 무엇인가요?","XSS는 악성 스크립트 실행 공격입니다. CSRF는 사용자의 인증 상태를 이용해 원치 않는 요청을 보내는 공격입니다."],
+[173,"SQL Injection이란 무엇인가요?","사용자 입력이 SQL로 해석되어 공격자가 의도한 쿼리가 실행되는 공격입니다. 파라미터 바인딩으로 방어할 수 있습니다."],
+[174,"Access Token과 Refresh Token 차이는 무엇인가요?","Access Token은 API 인증에 사용하는 토큰이고 보통 만료 시간이 짧습니다. Refresh Token은 Access Token 재발급에 사용하는 토큰이고 보통 만료 시간이 더 깁니다."],
+[175,"OAuth2란 무엇인가요?","사용자가 비밀번호를 직접 제공하지 않고 외부 서비스 인증을 통해 권한을 위임받는 표준 방식입니다."],
+[176,"SameSite 쿠키 옵션이란 무엇인가요?","쿠키가 다른 사이트 요청에 함께 전송될지 제어하는 옵션입니다. CSRF 공격을 줄이는 데 도움이 됩니다."],
+[177,"HttpOnly 쿠키 옵션이란 무엇인가요?","JavaScript에서 쿠키에 접근하지 못하게 하는 옵션입니다. XSS로 토큰이 탈취되는 위험을 줄일 수 있습니다."],
+[178,"Secure 쿠키 옵션이란 무엇인가요?","HTTPS 연결에서만 쿠키가 전송되도록 하는 설정입니다."]
+]},
+{t:"OS / 네트워크 / 동기 비동기",items:[
+[179,"프로세스와 스레드의 차이는 무엇인가요?","프로세스는 실행 중인 프로그램입니다. 스레드는 프로세스 안에서 실제 작업을 수행하는 실행 흐름입니다."],
+[180,"프로세스와 스레드의 메모리 차이는 무엇인가요?","프로세스는 독립된 메모리 공간을 가집니다. 스레드는 같은 프로세스 안에서 코드, 데이터, 힙 영역을 공유합니다."],
+[181,"동기와 비동기의 차이는 무엇인가요?","동기는 작업이 끝날 때까지 기다린 뒤 다음 작업을 진행합니다. 비동기는 작업이 끝나기를 기다리지 않고 다음 작업을 진행할 수 있습니다."],
+[182,"TCP와 UDP의 차이는 무엇인가요?","TCP는 연결 기반으로 신뢰성 있게 데이터를 전달합니다. UDP는 비연결 기반으로 빠르지만 데이터 손실이나 순서 보장이 약합니다."],
+[183,"데드락이란 무엇인가요?","여러 프로세스나 스레드가 서로 상대가 가진 자원을 기다리면서 영원히 멈춰 있는 상태입니다."],
+[184,"데드락 발생 조건은 무엇인가요?","상호 배제, 점유와 대기, 비선점, 순환 대기입니다."],
+[185,"컴파일 언어와 인터프리터 언어의 차이는 무엇인가요?","컴파일 언어는 실행 전에 전체 코드를 변환한 뒤 실행합니다. 인터프리터 언어는 코드를 한 줄씩 해석하며 실행합니다."],
+[186,"CPU, 메모리, 디스크 차이는 무엇인가요?","CPU는 연산을 처리합니다. 메모리는 실행 중인 프로그램과 데이터를 임시 저장합니다. 디스크는 데이터를 장기 저장합니다."]
+]},
+{t:"테스트",items:[
+[187,"단위 테스트와 통합 테스트의 차이는 무엇인가요?","단위 테스트는 작은 단위를 독립적으로 검증합니다. 통합 테스트는 여러 계층이나 실제 환경에 가까운 흐름을 함께 검증합니다."],
+[188,"JUnit5란 무엇인가요?","Java에서 테스트 코드를 작성하고 실행하기 위한 테스트 프레임워크입니다."],
+[189,"Mockito란 무엇인가요?","테스트할 때 의존 객체를 가짜 객체로 대체하기 위해 사용하는 라이브러리입니다."],
+[190,"MockMvc란 무엇인가요?","실제 서버를 띄우지 않고 Controller에 HTTP 요청을 보내는 것처럼 테스트할 수 있게 해주는 도구입니다."],
+[191,"테스트 코드는 왜 작성하나요?","기능이 의도대로 동작하는지 확인하고, 수정 후 기존 기능이 깨졌는지 검증하기 위해 작성합니다."],
+[192,"테스트에서 무엇을 검증하나요?","예상 결과, 예외 발생 여부, 응답 상태 코드, 응답 body, 의존 메서드 호출 여부 등을 검증합니다."]
+]},
+{t:"Git / 협업",items:[
+[193,"Git을 사용하는 이유는 무엇인가요?","코드 변경 이력을 관리하고 팀원들과 협업하기 위해 사용합니다."],
+[194,"Branch를 사용하는 이유는 무엇인가요?","기능 개발이나 버그 수정을 독립된 작업 공간에서 진행하기 위해 사용합니다."],
+[195,"Pull Request를 사용하는 이유는 무엇인가요?","작업한 변경 내용을 팀원에게 공유하고 리뷰받기 위해 사용합니다."],
+[196,"코드 리뷰를 받으면 어떻게 하나요?","지적받은 부분이 왜 문제인지 이해하고, 이해가 안 되는 부분은 질문한 뒤 수정합니다."]
+]},
+{t:"Redis / Docker / Infra / 운영",items:[
+[197,"Redis란 무엇인가요?","메모리 기반의 빠른 저장소입니다. 캐시, 세션, 토큰, 임시 데이터, 랭킹, 카운터 등에 사용할 수 있습니다."],
+[198,"캐시를 사용할 때 주의할 점은 무엇인가요?","원본 데이터와 캐시 데이터가 달라지는 문제를 주의해야 합니다. 만료 시간, 갱신 시점, 삭제 전략이 필요합니다."],
+[199,"Docker를 사용하는 이유는 무엇인가요?","애플리케이션 실행 환경을 컨테이너로 일관되게 관리해 개발 환경 차이를 줄이기 위해 사용합니다."],
+[200,"Docker와 Docker Compose의 차이는 무엇인가요?","Docker는 컨테이너를 만들고 실행하는 기술입니다. Docker Compose는 여러 컨테이너를 하나의 설정 파일로 함께 관리하는 도구입니다."],
+[201,"Nginx란 무엇인가요?","웹 서버이자 리버스 프록시 서버입니다. 정적 파일 제공, 프록시, 로드밸런싱, SSL 처리 등에 사용할 수 있습니다."],
+[202,"Kubernetes란 무엇인가요?","컨테이너를 여러 서버에서 관리하고 배포, 확장, 복구를 자동화하기 위한 오케스트레이션 도구입니다."],
+[203,"로드밸런싱이란 무엇인가요?","여러 서버에 트래픽을 분산하는 것입니다."],
+[204,"Scale Up과 Scale Out 차이는 무엇인가요?","Scale Up은 서버 한 대의 성능을 높이는 것입니다. Scale Out은 서버 대수를 늘리는 것입니다."],
+[205,"무중단 배포란 무엇인가요?","서비스를 중단하지 않고 새 버전을 배포하는 방식입니다."],
+[206,"로그는 왜 중요한가요?","운영 중 문제 원인을 파악하기 위해 중요합니다. 요청 흐름, 예외 발생 위치, 응답 시간 등을 확인할 수 있습니다."],
+[207,"모니터링이란 무엇인가요?","서버나 애플리케이션 상태를 지속적으로 확인하는 것입니다. CPU, 메모리, DB 커넥션, 응답 시간, 에러율 등을 확인합니다."],
+[208,"CI/CD란 무엇인가요?","코드 변경 후 빌드, 테스트, 배포를 자동화하는 과정입니다."],
+[209,"CI가 필요한 이유는 무엇인가요?","코드가 병합될 때 자동으로 빌드와 테스트를 실행해 문제를 빨리 발견하기 위해 필요합니다."],
+[210,"환경변수는 왜 사용하나요?","DB 비밀번호, API Key, JWT Secret처럼 코드에 직접 넣으면 안 되는 설정값을 외부에서 관리하기 위해 사용합니다."],
+[211,"Secret을 GitHub에 올리면 왜 안 되나요?","외부에 노출되어 계정 탈취, 과금 피해, 데이터 유출로 이어질 수 있기 때문입니다."]
+]},
+{t:"React / 프론트엔드",items:[
+[212,"React란 무엇인가요?","사용자 인터페이스를 만들기 위한 JavaScript 라이브러리입니다. 화면을 컴포넌트 단위로 나누어 개발할 수 있습니다."],
+[213,"컴포넌트 기반 개발이란 무엇인가요?","화면을 버튼, 입력 폼, 목록, 페이지 같은 작은 단위로 나누어 개발하는 방식입니다."],
+[214,"props와 state의 차이는 무엇인가요?","props는 부모 컴포넌트가 자식에게 전달하는 값입니다. state는 컴포넌트 내부에서 관리하는 값입니다."],
+[215,"React에서 렌더링이 다시 일어나는 경우는 언제인가요?","state나 props가 변경될 때 다시 렌더링됩니다."],
+[216,"useState란 무엇인가요?","함수형 컴포넌트에서 변하는 값을 관리할 때 사용하는 Hook입니다."],
+[217,"useEffect란 무엇인가요?","컴포넌트가 렌더링된 이후 실행해야 하는 작업을 처리할 때 사용하는 Hook입니다."],
+[218,"useEffect의 dependency array는 무엇인가요?","useEffect가 언제 다시 실행될지 결정하는 배열입니다."],
+[219,"useMemo와 useCallback의 차이는 무엇인가요?","useMemo는 계산 결과를 메모이제이션합니다. useCallback은 함수를 메모이제이션합니다."],
+[220,"지역 상태와 전역 상태의 차이는 무엇인가요?","지역 상태는 특정 컴포넌트 안에서만 필요한 상태입니다. 전역 상태는 여러 화면이나 컴포넌트에서 함께 사용하는 상태입니다."],
+[221,"Redux의 기본 흐름은 무엇인가요?","이벤트 발생 → Action dispatch → Reducer 상태 변경 → Store 업데이트 → 화면 반영입니다."],
+[222,"Context API와 Redux의 차이는 무엇인가요?","Context API는 값을 전역처럼 공유하는 기능입니다. Redux는 복잡한 전역 상태와 상태 변경 흐름을 명확히 관리할 때 적합합니다."],
+[223,"서버 상태와 클라이언트 상태의 차이는 무엇인가요?","서버 상태는 API로 가져오는 데이터입니다. 클라이언트 상태는 브라우저 화면 안에서만 관리되는 상태입니다."]
+]},
+{t:"TypeScript / JavaScript",items:[
+[224,"TypeScript를 사용하는 이유는 무엇인가요?","JavaScript에 타입을 추가해 개발 중 실수를 줄이고 코드의 의도를 명확히 하기 위해 사용합니다."],
+[225,"type과 interface의 차이는 무엇인가요?","둘 다 객체 구조를 정의할 수 있습니다. interface는 객체 구조 정의와 확장에 많이 쓰이고, type은 union 등 복잡한 타입 표현에 유리합니다."],
+[226,"any를 많이 쓰면 안 되는 이유는 무엇인가요?","타입 검사의 장점이 줄어들고, 잘못된 값이나 필드 사용을 컴파일 단계에서 잡기 어렵기 때문입니다."],
+[227,"var, let, const 차이는 무엇인가요?","var는 함수 스코프이고 재선언이 가능합니다. let은 블록 스코프이고 재할당이 가능합니다. const는 블록 스코프이고 재할당이 불가능합니다."],
+[228,"==과 === 차이는 무엇인가요?","==는 타입 변환을 허용해 비교합니다. ===는 타입과 값이 모두 같아야 true입니다."],
+[229,"null과 undefined의 차이는 무엇인가요?","undefined는 값이 할당되지 않은 상태입니다. null은 개발자가 의도적으로 값이 없음을 넣은 상태입니다."]
+]},
+{t:"MVVM / Vue / Nuxt / 화면 구조",items:[
+[230,"MVVM이란 무엇인가요?","Model, View, ViewModel로 역할을 나누는 패턴입니다."],
+[231,"MVVM의 장점은 무엇인가요?","화면과 비즈니스 로직을 분리할 수 있어 유지보수와 테스트가 쉬워집니다."],
+[232,"React나 Vue에서도 MVVM처럼 볼 수 있나요?","완전히 같지는 않지만 화면과 상태·로직을 분리한다는 관점에서 비슷하게 볼 수 있습니다."],
+[233,"React와 Vue의 공통점은 무엇인가요?","둘 다 컴포넌트 기반으로 화면을 구성하고, 상태가 바뀌면 화면이 업데이트됩니다."],
+[234,"React와 Vue의 차이는 무엇인가요?","React는 JSX를 사용합니다. Vue는 template, script, style로 나뉜 단일 파일 컴포넌트를 많이 사용합니다."],
+[235,"Nuxt란 무엇인가요?","Vue 기반 프레임워크입니다. 라우팅, 서버 사이드 렌더링, 파일 기반 페이지 구성 등을 제공합니다."],
+[236,"SPA, SSR, CSR의 차이는 무엇인가요?","SPA는 하나의 페이지에서 JavaScript로 화면 전환을 처리하는 방식입니다. SSR은 서버에서 HTML을 만들어 내려주는 방식입니다. CSR은 브라우저에서 JavaScript로 화면을 구성하는 방식입니다."],
+[237,"프론트엔드 유효성 검사가 필요한 이유는 무엇인가요?","사용자가 잘못된 값을 입력했을 때 빠르게 안내하고 불필요한 API 요청을 줄이기 위해 필요합니다."],
+[238,"백엔드 검증이 반드시 필요한 이유는 무엇인가요?","프론트엔드 검증은 우회될 수 있기 때문에 서버에서 최종적으로 입력값을 검증해야 합니다."]
+]},
+{t:"비동기 / API 연동",items:[
+[239,"비동기 처리란 무엇인가요?","작업이 끝날 때까지 프로그램 전체가 멈추지 않고, 결과가 준비되면 이어서 처리하는 방식입니다."],
+[240,"Promise와 async/await의 차이는 무엇인가요?","Promise는 비동기 작업의 결과를 표현하는 객체입니다. async/await은 Promise를 더 읽기 쉽게 작성하는 문법입니다."],
+[241,"API 호출 중 로딩, 성공, 실패 상태는 어떻게 관리하나요?","loading, data, error 상태를 나누어 관리합니다. 요청 시작 시 loading을 true로 두고, 성공하면 data, 실패하면 error를 저장합니다."]
+]},
+{t:"MSA / Kafka / REST",items:[
+[242,"MSA란 무엇인가요?","하나의 큰 서비스를 여러 작은 서비스로 나누어 개발하고 운영하는 구조입니다."],
+[243,"MSA의 장점과 단점은 무엇인가요?","장점은 독립 배포, 장애 범위 분리, 확장성입니다. 단점은 통신 복잡도, 데이터 정합성 관리, 운영 난이도 증가입니다."],
+[244,"MSA는 언제 필요한가요?","서비스 규모가 크고 기능별 독립 배포나 확장이 필요할 때 적합합니다."],
+[245,"Kafka란 무엇인가요?","대용량 이벤트 스트리밍과 비동기 메시징에 사용되는 플랫폼입니다."],
+[246,"REST API와 Kafka의 차이는 무엇인가요?","REST API는 요청과 응답이 명확한 동기 통신 방식입니다. Kafka는 메시지를 발행하고 소비하는 비동기 이벤트 기반 방식입니다."],
+[247,"QT-AI에서 Kafka 대신 REST를 선택한 이유는 무엇인가요?","주요 흐름이 사용자의 요청에 즉시 응답해야 하는 경우가 많았기 때문에 REST API가 더 적합하다고 판단했습니다."],
+[248,"QT-AI에서 RAG 대신 MySQL을 선택한 이유는 무엇인가요?","필요한 데이터가 날짜와 성경 구절 범위에 따라 명확하게 정해지는 데이터였기 때문에 MySQL 범위 조회가 더 단순하고 적합하다고 판단했습니다."]
+]},
+{t:"프로젝트 기반 기술 답변",items:[
+[249,"QT-AI 프로젝트를 기술적으로 설명해주세요.","Spring Boot 기반 성경 묵상 보조 앱입니다. AI 도메인 MSA 분리, 서비스 간 API 계약, AI 해설 사전 생성, 데이터 정합성 검증, AI 검수 흐름을 경험했습니다."],
+[250,"병원 예약 시스템을 기술적으로 설명해주세요.","Spring Boot 기반 병원 예약 및 내부 업무 관리 시스템입니다. 관리자 대시보드, 예약, 환자, 직원, 진료과, 물품, 병원 규칙 관리 기능을 구현했습니다. Spring MVC, Mustache, Spring Security, JPA, JUnit5, Mockito, MockMvc를 사용했습니다."],
+[251,"항공 예약 서비스를 기술적으로 설명해주세요.","항공권 조회부터 예약 완료까지 이어지는 서비스입니다. React, TypeScript, Redux 기반 프론트엔드와 Spring Boot, Spring Security, JPA, JWT 기반 백엔드 API를 연동했습니다."]
+]},
+{t:"실무 상황형 질문",items:[
+[252,"운영 중 버그가 발생하면 어떻게 확인하나요?","재현 조건을 확인하고, 로그와 요청·응답 데이터를 본 뒤 Controller, Service, Repository, DB 흐름을 따라가며 원인을 좁힙니다."],
+[253,"레거시 코드를 수정할 때 주의할 점은 무엇인가요?","기존 동작을 깨뜨리지 않는 것이 중요합니다. 호출 위치와 영향 범위를 확인하고 작은 단위로 수정합니다."],
+[254,"모르는 기술을 맡으면 어떻게 하나요?","기존 코드와 문서를 보고 흐름을 파악한 뒤, 작은 샘플을 만들어 동작 원리를 확인하고 질문할 부분을 정리합니다."],
+[255,"장애가 났는데 원인을 모르면 어떻게 하나요?","재현 조건을 고정하고 입력, 처리, 출력 단계를 나눠 확인합니다. 로그와 최근 변경사항도 확인합니다."],
+[256,"납기가 촉박하면 어떻게 하나요?","필수 기능과 나중에 보완 가능한 기능을 구분하고, 리스크를 팀에 공유한 뒤 핵심 기능부터 안정적으로 구현합니다."],
+[257,"CRUD API를 설계한다면 어떤 계층으로 나누나요?","Controller, Service, Repository, Entity, DTO로 나눕니다."],
+[258,"예약 기능을 만든다면 어떤 예외 상황을 고려하나요?","이미 예약된 시간, 존재하지 않는 사용자나 예약 대상, 권한 없는 수정, 예약 가능 시간 외 요청, 동시 예약, 저장 실패 시 rollback을 고려합니다."],
+[259,"게시글 목록 검색/페이징 구현 시 무엇을 고려하나요?","검색 조건, 정렬 기준, 페이지 번호, 페이지 크기, 인덱스, 빈 결과 응답을 고려합니다."]
+]},
+{t:"한 줄 답변",items:[
+[260,"Spring 한 줄 답변","Spring은 객체 생성과 의존성 관리를 컨테이너가 대신 해주고, 트랜잭션, 보안, MVC 기능을 제공하는 프레임워크입니다."],
+[261,"JPA 한 줄 답변","JPA는 객체와 DB 테이블을 매핑해 객체 중심으로 데이터를 다룰 수 있게 해주는 ORM 표준입니다."],
+[262,"트랜잭션 한 줄 답변","트랜잭션은 여러 DB 작업을 하나의 작업 단위로 묶어 성공 시 commit, 실패 시 rollback하는 기능입니다."],
+[263,"N+1 한 줄 답변","N+1 문제는 목록 조회 1번 이후 연관 데이터를 가져오며 N번의 추가 쿼리가 발생하는 문제입니다."],
+[264,"JWT 한 줄 답변","JWT는 인증 정보를 담은 서명된 토큰을 클라이언트가 요청마다 보내고 서버가 검증하는 방식입니다."],
+[265,"AOP 한 줄 답변","AOP는 로깅, 트랜잭션, 권한 체크처럼 반복되는 공통 관심사를 핵심 로직과 분리하는 방식입니다."],
+[266,"동시성 한 줄 답변","동시성 문제는 여러 요청이 같은 데이터를 동시에 수정할 때 발생하며 트랜잭션, 락, 원자적 update 등으로 해결합니다."],
+[267,"프로세스/스레드 한 줄 답변","프로세스는 실행 중인 프로그램이고, 스레드는 프로세스 안에서 작업을 수행하는 실행 흐름입니다."],
+[268,"Docker 한 줄 답변","Docker는 애플리케이션 실행 환경을 이미지와 컨테이너로 관리해 환경 차이를 줄이는 기술입니다."],
+[269,"Redis 한 줄 답변","Redis는 메모리 기반 저장소로 캐시, 세션, 토큰, 임시 데이터처럼 빠른 조회가 필요한 곳에 사용합니다."],
+[270,"테스트 한 줄 답변","테스트 코드는 기능이 의도대로 동작하는지 확인하고, 수정 후 기존 기능이 깨지지 않았는지 검증하기 위한 안전장치입니다."]
+]}
+];
+
+const main=document.getElementById('main');
+const chipsEl=document.getElementById('chips');
+const searchEl=document.getElementById('search');
+const countNote=document.getElementById('countNote');
+const emptyEl=document.getElementById('empty');
+let activeSection='all';
+
+function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+function highlight(text,q){
+  if(!q)return esc(text);
+  const escaped=esc(text);
+  const re=new RegExp(q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'gi');
+  return escaped.replace(re,m=>'<mark>'+m+'</mark>');
+}
+
+function render(){
+  const q=searchEl.value.trim();
+  main.innerHTML='';
+  let total=0;
+  DATA.forEach((sec,si)=>{
+    if(activeSection!=='all'&&activeSection!==String(si))return;
+    const filtered=sec.items.filter(([n,qu,a])=>{
+      if(!q)return true;
+      const lq=q.toLowerCase();
+      return qu.toLowerCase().includes(lq)||a.toLowerCase().includes(lq);
+    });
+    if(!filtered.length)return;
+    total+=filtered.length;
+    const secEl=document.createElement('section');
+    secEl.className='section';
+    secEl.innerHTML=`<div class="section-head">
+      <span class="section-num">${String(si+1).padStart(2,'0')}</span>
+      <span class="section-title">${esc(sec.t)}</span>
+      <span class="section-count">${filtered.length}문항</span>
+    </div>`;
+    filtered.forEach(([n,qu,a])=>{
+      const card=document.createElement('div');
+      card.className='qa'+(q?' open':'');
+      card.innerHTML=`<button class="qa-q">
+        <span class="qa-num">Q${n}</span>
+        <span class="qa-qtext">${highlight(qu,q)}</span>
+        <svg class="qa-caret" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg>
+      </button>
+      <div class="qa-a">${highlight(a,q)}</div>`;
+      card.querySelector('.qa-q').addEventListener('click',()=>card.classList.toggle('open'));
+      const ans=card.querySelector('.qa-a');
+      ans.addEventListener('click',()=>{
+        if(document.body.classList.contains('quiz'))ans.classList.add('revealed');
+      });
+      secEl.appendChild(card);
+    });
+    main.appendChild(secEl);
+  });
+  countNote.textContent=q||activeSection!=='all'
+    ? `${total} / 270 문항 표시 중`
+    : `총 270문항 · 질문을 탭하면 답변이 열립니다`;
+  emptyEl.style.display=total?'none':'block';
+}
+
+/* chips */
+const allChip=document.createElement('button');
+allChip.className='chip active';allChip.textContent='전체';
+allChip.addEventListener('click',()=>{setChip(allChip,'all')});
+chipsEl.appendChild(allChip);
+DATA.forEach((sec,si)=>{
+  const c=document.createElement('button');
+  c.className='chip';c.textContent=sec.t;
+  c.addEventListener('click',()=>setChip(c,String(si)));
+  chipsEl.appendChild(c);
+});
+function setChip(el,val){
+  chipsEl.querySelectorAll('.chip').forEach(x=>x.classList.remove('active'));
+  el.classList.add('active');activeSection=val;render();
+  window.scrollTo({top:0});
+}
+
+/* search */
+let deb;
+searchEl.addEventListener('input',()=>{clearTimeout(deb);deb=setTimeout(render,150)});
+
+/* quiz mode */
+const quizBtn=document.getElementById('quizBtn');
+quizBtn.addEventListener('click',()=>{
+  document.body.classList.toggle('quiz');
+  quizBtn.classList.toggle('on');
+  document.querySelectorAll('.qa-a.revealed').forEach(x=>x.classList.remove('revealed'));
+  if(document.body.classList.contains('quiz')){
+    document.querySelectorAll('.qa').forEach(x=>x.classList.add('open'));
+  }
+});
+
+/* top button */
+const topBtn=document.getElementById('topBtn');
+window.addEventListener('scroll',()=>{
+  topBtn.classList.toggle('show',window.scrollY>600);
+});
+topBtn.addEventListener('click',()=>window.scrollTo({top:0,behavior:'smooth'}));
+
+render();
+</script>
+</body>
+</html>
