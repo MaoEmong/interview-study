@@ -54,6 +54,23 @@ svg{width:100%;height:auto;display:block;background:#fff;border:1px solid #DCE6F
 .cap .capX{font-size:11.5px;color:#33507E;line-height:1.45;display:block}
 .cap code{font-family:var(--mono);font-size:10.5px;background:#EEF3F9;border-radius:5px;padding:1px 6px}
 .next{background:#fff;border:2px dashed var(--line);border-radius:12px;padding:14px 18px;font-size:12.5px;color:#33507E;line-height:1.6;margin-top:10px}
+/* ── 챕터 탭 ── */
+.tabs{position:sticky;top:0;z-index:20;display:grid;grid-template-columns:repeat(8,1fr);gap:4px;
+  margin:14px -14px 0;padding:9px 14px;background:var(--bg);border-bottom:1.5px solid var(--grid)}
+@media (max-width:760px){.tabs{grid-template-columns:repeat(4,1fr)}}
+@media (max-width:400px){.tabs{grid-template-columns:repeat(3,1fr)}}
+.tab{border:1.5px solid var(--line);background:#fff;border-radius:8px;
+  padding:7px 4px;font-size:10.5px;font-weight:800;color:#4A6DA7;cursor:pointer;
+  font-family:inherit;line-height:1.3;transition:background .14s,border-color .14s,color .14s}
+.tab:hover{border-color:var(--msa);color:var(--msa)}
+.tab.on{border-color:var(--msa);background:var(--msa);color:#fff}
+.tab .tn{font-family:var(--mono);opacity:.7;margin-right:3px}
+.tab.on .tn{opacity:.85}
+.chap{display:none}
+.chap.on{display:block;animation:chapin .2s ease}
+.chap .sec{margin-top:22px}
+@keyframes chapin{from{opacity:0}to{opacity:1}}
+@media (prefers-reduced-motion:reduce){.chap.on{animation:none}.tab{transition:none}}
 </style>
 </head>
 <body>
@@ -62,9 +79,20 @@ svg{width:100%;height:auto;display:block;background:#fff;border:1px solid #DCE6F
   <div class="eyebrow">MICROSERVICES ARCHITECTURE</div>
   <h1>2026.08.26 스터디 — MSA: 서비스를 쪼갠다는 것</h1>
   <div class="q">오늘의 질문 — 서비스를 쪼개면, 트랜잭션은 누가 책임지는가</div>
-  <div class="sub">각 항목: 만화로 개념 → 판서로 구조 → 시뮬레이터로 단계별 확인. 시뮬레이터는 [▶ 재생 / 한 단계 ▸ / ⟲ 리셋]으로 조작한다.</div>
+  <div class="sub">아래 탭에서 항목을 골라 보자. 각 항목: 만화로 개념 → 판서로 구조 → 시뮬레이터로 단계별 확인. 시뮬레이터는 [▶ 재생 / 한 단계 ▸ / ⟲ 리셋]으로 조작한다.</div>
 </div>
 
+<nav class="tabs" aria-label="챕터">
+  <button class="tab on" data-c="c1"><span class="tn">1</span>모놀리식</button>
+  <button class="tab" data-c="c2"><span class="tn">2</span>MSA란</button>
+  <button class="tab" data-c="c3"><span class="tn">3</span>DDD</button>
+  <button class="tab" data-c="c4"><span class="tn">4</span>동기 통신</button>
+  <button class="tab" data-c="c5"><span class="tn">5</span>비동기·Kafka</button>
+  <button class="tab" data-c="c6"><span class="tn">6</span>분산 트랜잭션</button>
+  <button class="tab" data-c="c7"><span class="tn">7</span>사가 패턴</button>
+  <button class="tab" data-c="c8"><span class="tn">8</span>다음 회차</button>
+</nav>
+<section class="chap on" id="c1">
 <!-- ═══ 1. 모놀리식 ═══ -->
 <div class="sec"><span class="no">1</span><h2>모놀리식 — 출발점과 한계</h2></div>
 <img class="art" src="img/comic1.jpg" alt="모놀리식 만화">
@@ -73,6 +101,8 @@ svg{width:100%;height:auto;display:block;background:#fff;border:1px solid #DCE6F
 <img class="art" src="img/board02.png" alt="모놀리식 마비">
 <div class="lead">시퀀스를 보면 서비스 개념은 모놀리식 안에도 이미 있다 — 다만 전부 한 프로세스다. 그래서 한 곳의 과부하가 응답 전체를 멈춘다 (그림의 빨간 구간뿐 아니라 실제로는 앞단 응답까지 전부).</div>
 
+</section>
+<section class="chap" id="c2">
 <!-- ═══ 2. MSA란 ═══ -->
 <div class="sec"><span class="no">2</span><h2>MSA란 — 무엇을 해결하는가</h2></div>
 <img class="art" src="img/comic2.jpg" alt="MSA 만화">
@@ -144,11 +174,15 @@ svg{width:100%;height:auto;display:block;background:#fff;border:1px solid #DCE6F
 <div class="cap"><b class="capT"></b><span class="capX"></span></div>
 </div>
 
+</section>
+<section class="chap" id="c3">
 <!-- ═══ 3. DDD ═══ -->
 <div class="sec"><span class="no">3</span><h2>서비스 분리의 기준 — DDD</h2></div>
 <img class="art" src="img/comic3.jpg" alt="DDD 만화">
 <div class="lead">기술 계층으로 자르면 모든 조각이 모든 층에 의존한다(케이크). 함께 변하는 업무끼리 묶는 것 — 도메인 경계가 자르는 기준이다. 위 시뮬레이터의 "② 분해 과정"에서 경계 긋기 단계가 이 내용이다.</div>
 
+</section>
+<section class="chap" id="c4">
 <!-- ═══ 4. 동기 통신 ═══ -->
 <div class="sec"><span class="no">4</span><h2>동기 통신 — API 호출과 Gateway</h2></div>
 <img class="art" src="img/comic4.jpg" alt="동기 만화">
@@ -200,6 +234,8 @@ svg{width:100%;height:auto;display:block;background:#fff;border:1px solid #DCE6F
 <div class="cap"><b class="capT"></b><span class="capX"></span></div>
 </div>
 
+</section>
+<section class="chap" id="c5">
 <!-- ═══ 5. 비동기 통신 ═══ -->
 <div class="sec"><span class="no">5</span><h2>비동기 통신 — 이벤트와 Kafka</h2></div>
 <img class="art" src="img/comic5.jpg" alt="비동기 만화">
@@ -246,6 +282,8 @@ svg{width:100%;height:auto;display:block;background:#fff;border:1px solid #DCE6F
 <div class="cap"><b class="capT"></b><span class="capX"></span></div>
 </div>
 
+</section>
+<section class="chap" id="c6">
 <!-- ═══ 6. 분산 트랜잭션 ═══ -->
 <div class="sec"><span class="no">6</span><h2>분산 트랜잭션 — 쪼개진 @Transactional</h2></div>
 <img class="art" src="img/comic6.jpg" alt="분산 트랜잭션 만화">
@@ -253,6 +291,8 @@ svg{width:100%;height:auto;display:block;background:#fff;border:1px solid #DCE6F
 <img class="art" src="img/board07.png" alt="왜 HTTP만으로 부족한가">
 <div class="lead">중간 실패 가능 / 누가 전체를 조율하지? / 어디까지 되돌려야 하지? — 이 세 질문의 답이 사가 패턴이다. 반쪽 상태가 실제로 어떻게 생기는지는 아래 시뮬레이터의 "① 반쪽 상태"에서 값으로 확인한다.</div>
 
+</section>
+<section class="chap" id="c7">
 <!-- ═══ 7. 사가 패턴 ═══ -->
 <div class="sec"><span class="no">7</span><h2>사가 패턴 — 보상으로 되돌리기</h2></div>
 <img class="art" src="img/comic7.jpg" alt="사가 만화">
@@ -345,6 +385,8 @@ svg{width:100%;height:auto;display:block;background:#fff;border:1px solid #DCE6F
 <img class="art" src="img/board08.png" alt="주문 생성 전체 흐름">
 <img class="art" src="img/board12.png" alt="주문 실패 보상 흐름">
 
+</section>
+<section class="chap" id="c8">
 <!-- ═══ 8. 운영의 산 ═══ -->
 <div class="sec"><span class="no">8</span><h2>운영의 산 — Docker·K8s·관측 (다음 회차 예고)</h2></div>
 <div class="next">
@@ -352,6 +394,8 @@ svg{width:100%;height:auto;display:block;background:#fff;border:1px solid #DCE6F
   <b>Docker</b>(실행 환경을 이미지로 포장) · <b>Kubernetes</b>(원하는 상태를 선언하면 알아서 유지) · <b>Prometheus/Grafana</b>(수집/시각화) —
   오늘은 "왜 필요한가"까지. <b>다음 회차 주제: Docker &amp; Kubernetes</b>, 직접 띄우며 다룬다.
 </div>
+
+</section>
 
 <script>
 const $=id=>document.getElementById(id);
@@ -683,6 +727,28 @@ const p5=makePlayer('t5',{gap:2400,onReset:sc=>{
   }
 }});
 p5.reset();
+
+/* ── 챕터 탭 ── */
+(function(){
+  const PLAYERS={c2:[p1],c4:[p2],c5:[p3],c7:[p4,p5]};
+  const tabs=[...document.querySelectorAll('.tab')];
+  const chaps=[...document.querySelectorAll('.chap')];
+  function show(id){
+    chaps.forEach(c=>c.classList.toggle('on',c.id===id));
+    tabs.forEach(t=>t.classList.toggle('on',t.dataset.c===id));
+    /* 떠난 챕터의 자동재생을 멈추고 처음 상태로 되돌린다 */
+    for(const k in PLAYERS) if(k!==id) PLAYERS[k].forEach(p=>p.reset());
+    history.replaceState(null,'','#'+id);
+    window.scrollTo(0,0);
+  }
+  tabs.forEach(t=>t.addEventListener('click',()=>show(t.dataset.c)));
+  window.addEventListener('hashchange',()=>{
+    const h=location.hash.slice(1);
+    if(chaps.some(c=>c.id===h)) show(h);
+  });
+  const init=location.hash.slice(1);
+  show(chaps.some(c=>c.id===init)?init:'c1');
+})();
 </script>
 </body>
 </html>
