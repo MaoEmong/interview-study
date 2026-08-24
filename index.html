@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>면접준비 스터디 · 자료실</title>
+<meta name="description" content="면접준비 스터디 자료실 — CS 면접 Q&A 270문항과 주차별 만화·도면 시뮬레이터 모음.">
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<style>
+:root{
+  --bg:#EEF3F9; --grid:#DCE6F2; --ink:#17325B; --line:#8FA6C6; --soft:#33507E;
+  --amber:#F59E0B; --blue:#2B5CE6; --green:#15803D; --teal:#0E5E52;
+  --gold:#B8860B; --msa:#EA580C;
+  --mono:'SF Mono','Consolas',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  background:var(--bg);
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:24px 24px;
+  color:var(--ink);
+  font-family:'Pretendard','Apple SD Gothic Neo','Noto Sans KR',sans-serif;
+  max-width:860px;margin:0 auto;padding:18px 14px 48px;
+  -webkit-text-size-adjust:100%;
+}
+
+/* ── 헤더 ── */
+.hero{background:#fff;border:2px solid var(--ink);border-radius:14px;padding:16px 20px}
+.hero .eyebrow{font-size:11px;letter-spacing:3px;font-weight:800;color:var(--amber);font-family:var(--mono)}
+.hero h1{font-size:23px;font-weight:900;margin:3px 0 9px;letter-spacing:-.4px}
+.hero .q{background:#FFF7E6;border-left:4px solid var(--amber);border-radius:0 8px 8px 0;padding:8px 12px;font-size:13.5px;font-weight:800}
+.hero .sub{font-size:12px;color:var(--soft);margin-top:9px;line-height:1.6}
+.hero .meta{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:11px;padding-top:10px;border-top:1.5px dashed var(--line);
+  font-family:var(--mono);font-size:10.5px;font-weight:600;color:#5C7BAA}
+.hero .meta b{color:var(--ink);font-weight:800}
+
+/* ── 섹션 헤딩 ── */
+.sec{display:flex;align-items:baseline;gap:10px;margin:34px 0 12px;padding-bottom:7px;border-bottom:3px solid var(--ink)}
+.sec .n{font-family:var(--mono);font-size:11px;font-weight:800;color:#fff;background:var(--ink);
+  border-radius:5px;padding:2px 7px;letter-spacing:1px;flex:none}
+.sec h2{font-size:16px;font-weight:900;letter-spacing:-.3px}
+.sec .note{margin-left:auto;font-size:10.5px;color:#5C7BAA;font-weight:700;text-align:right}
+
+/* ── 카드 ── */
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.card{
+  --c:var(--ink);
+  display:flex;flex-direction:column;
+  background:#fff;border:1.8px solid var(--line);border-radius:12px;
+  padding:14px 15px 13px;text-decoration:none;color:inherit;
+  transition:transform .16s ease,border-color .16s ease,box-shadow .16s ease;
+}
+.card:hover,.card:focus-visible{
+  transform:translateY(-2px);border-color:var(--c);
+  box-shadow:0 6px 0 -2px color-mix(in srgb,var(--c) 22%,transparent);
+  outline:none;
+}
+.card:focus-visible{box-shadow:0 0 0 3px color-mix(in srgb,var(--c) 30%,transparent)}
+.card .top{display:flex;align-items:center;gap:7px;margin-bottom:6px}
+.card .tag{font-family:var(--mono);font-size:10px;font-weight:800;letter-spacing:.8px;
+  color:var(--c);background:color-mix(in srgb,var(--c) 10%,#fff);
+  border:1.2px solid color-mix(in srgb,var(--c) 35%,#fff);border-radius:5px;padding:2px 6px}
+.card .date{margin-left:auto;font-family:var(--mono);font-size:10px;font-weight:700;color:#7E97BC}
+.card .next{font-family:var(--mono);font-size:9.5px;font-weight:800;letter-spacing:.8px;
+  color:#fff;background:var(--msa);border-radius:4px;padding:2px 6px}
+.card h3{font-size:16.5px;font-weight:900;letter-spacing:-.3px;line-height:1.3}
+.card .desc{font-size:11.5px;color:var(--soft);line-height:1.55;margin-top:5px}
+.card .desc b{color:var(--ink)}
+.card .desc code{font-family:var(--mono);font-size:10.5px;background:#EEF3F9;border-radius:5px;padding:1px 6px}
+.card .chips{display:flex;flex-wrap:wrap;gap:4px;margin-top:9px}
+.card .chips span{font-size:10px;font-weight:700;color:#4A6DA7;background:#F2F6FB;
+  border:1px solid #DCE6F2;border-radius:20px;padding:2.5px 7px}
+.card .go{margin-top:auto;padding-top:10px;font-size:11px;font-weight:800;color:var(--c);
+  display:flex;align-items:center;gap:4px}
+.card .go i{font-style:normal;transition:transform .16s ease}
+.card:hover .go i{transform:translateX(3px)}
+
+.card.wide{grid-column:1/-1}
+
+/* ── 푸터 ── */
+.foot{margin-top:32px;background:#fff;border:1.8px solid var(--line);border-radius:12px;padding:13px 16px}
+.foot .lab{font-family:var(--mono);font-size:10px;font-weight:800;letter-spacing:1.4px;color:var(--msa)}
+.foot p{font-size:12px;color:var(--soft);line-height:1.6;margin-top:5px}
+.foot .repo{display:inline-block;margin-top:10px;font-family:var(--mono);font-size:10.5px;
+  font-weight:700;color:#5C7BAA;text-decoration:none;border-bottom:1.5px dashed var(--line);padding-bottom:1px}
+.foot .repo:hover{color:var(--ink);border-color:var(--ink)}
+
+@media (max-width:640px){
+  body{padding:14px 11px 40px}
+  .hero h1{font-size:20px}
+  .grid{grid-template-columns:1fr}
+  .sec .note{display:none}
+}
+@media (prefers-reduced-motion:reduce){
+  .card,.card .go i{transition:none}
+  .card:hover,.card:focus-visible{transform:none}
+}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="eyebrow">INTERVIEW STUDY · 2026</div>
+  <h1>면접준비 스터디 자료실</h1>
+  <div class="q">만화로 한 번, 도면으로 다시 한 번.</div>
+  <p class="sub">
+    주차별 스터디 자료와 CS 면접 Q&amp;A를 한곳에 모았습니다.
+    설치할 것도, 로그인할 것도 없어요 — 링크만 열면 바로 시작합니다.
+  </p>
+  <div class="meta">
+    <span>문서 <b>6</b></span>
+    <span>Q&amp;A <b>270</b>문항</span>
+    <span>시뮬레이터 <b>4</b>종</span>
+    <span>최근 업데이트 <b>2026.08.24</b></span>
+  </div>
+</header>
+
+<div class="sec">
+  <span class="n">00</span>
+  <h2>상시 자료</h2>
+  <span class="note">회차와 상관없이 계속 보는 것</span>
+</div>
+
+<div class="grid">
+  <a class="card" href="cs-interview-qa.html" style="--c:var(--teal)">
+    <div class="top">
+      <span class="tag">Q&amp;A</span>
+      <span class="date">270문항</span>
+    </div>
+    <h3>CS 면접 Q&amp;A 정리본</h3>
+    <p class="desc">
+      Java·Spring·JPA·DB부터 React·TypeScript까지 21개 카테고리.
+      카테고리 필터와 실시간 검색이 있고, <b>퀴즈 모드</b>로 답을 가린 채 스스로 물어볼 수 있어요.
+    </p>
+    <div class="chips">
+      <span>Java</span><span>JVM·GC</span><span>Spring</span><span>JPA</span>
+      <span>DB·SQL</span><span>HTTP·REST</span><span>보안</span><span>React</span>
+      <span>TypeScript</span><span>MSA</span><span>실무 상황형</span>
+    </div>
+    <div class="go">열어보기 <i>→</i></div>
+  </a>
+
+  <a class="card" href="job-requirements.html" style="--c:var(--gold)">
+    <div class="top">
+      <span class="tag">SLIDES</span>
+      <span class="date">9장</span>
+    </div>
+    <h3>요즘 구인 조건</h3>
+    <p class="desc">
+      원티드·잡코리아·사람인·점핏·인크루트의 신입·주니어 공고를 모아
+      자주 나오는 <b>필수 기술</b>과 <b>우대사항</b>을 정리했어요. 방향 잡을 때 먼저 보면 좋아요.
+    </p>
+    <div class="chips">
+      <span>필수 기술</span><span>우대사항</span><span>포트폴리오</span><span>2026 시장</span>
+    </div>
+    <div class="go">발표 보기 <i>→</i></div>
+  </a>
+</div>
+
+<div class="sec">
+  <span class="n">01</span>
+  <h2>회차 자료</h2>
+  <span class="note">만화 + 도면 시뮬레이션</span>
+</div>
+
+<div class="grid">
+  <a class="card" href="spring-mvc/" style="--c:var(--blue)">
+    <div class="top">
+      <span class="tag">SIM</span>
+      <span class="date">2026.08.03</span>
+    </div>
+    <h3>Spring MVC</h3>
+    <p class="desc">요청 하나가 DispatcherServlet을 지나 응답으로 돌아오기까지, 그 여정을 따라갑니다.</p>
+    <div class="chips">
+      <span>요청의 여정</span><span>두 Controller</span><span>데이터 받기</span>
+      <span>상태 코드</span><span>검증·예외</span>
+    </div>
+    <div class="go">시뮬레이터 열기 <i>→</i></div>
+  </a>
+
+  <a class="card" href="spring-tx/" style="--c:var(--green)">
+    <div class="top">
+      <span class="tag">SIM</span>
+      <span class="date">2026.08.10</span>
+    </div>
+    <h3>트랜잭션과 AOP</h3>
+    <p class="desc">디스크에 없는 코드가 내 메서드보다 먼저 실행되는 이유 — 프록시와 <code>@Transactional</code>의 함정까지.</p>
+    <div class="chips">
+      <span>3계층</span><span>트랜잭션</span><span>@Transactional</span>
+      <span>AOP</span><span>함정</span>
+    </div>
+    <div class="go">시뮬레이터 열기 <i>→</i></div>
+  </a>
+
+  <a class="card" href="sql-db/" style="--c:var(--amber)">
+    <div class="top">
+      <span class="tag">SIM</span>
+      <span class="date">2026.08.17</span>
+    </div>
+    <h3>데이터 모델링과 SQL</h3>
+    <p class="desc">ERD에서 시작해 정규화, 조인, 윈도우 함수를 지나 트랜잭션 격리수준까지 7단계.</p>
+    <div class="chips">
+      <span>ERD</span><span>정규화</span><span>실행순서</span><span>조인</span>
+      <span>NULL</span><span>윈도우</span><span>격리수준</span>
+    </div>
+    <div class="go">시뮬레이터 열기 <i>→</i></div>
+  </a>
+
+  <a class="card" href="msa/" style="--c:var(--msa)">
+    <div class="top">
+      <span class="tag">SIM</span>
+      <span class="next">NEXT</span>
+      <span class="date">2026.08.26</span>
+    </div>
+    <h3>MSA — 서비스를 쪼갠다는 것</h3>
+    <p class="desc">모놀리식의 한계에서 출발해 DDD 분리 기준, Kafka 이벤트, 그리고 쪼개진 트랜잭션을 되돌리는 사가 패턴까지.</p>
+    <div class="chips">
+      <span>모놀리식</span><span>DDD</span><span>Gateway</span><span>Kafka</span>
+      <span>분산 트랜잭션</span><span>사가 패턴</span>
+    </div>
+    <div class="go">시뮬레이터 열기 <i>→</i></div>
+  </a>
+</div>
+
+<div class="foot">
+  <div class="lab">NEXT UP</div>
+  <p>
+    <b>운영의 산 — Docker · K8s · 관측.</b>
+    쪼개 놓은 서비스를 실제로 굴리는 이야기가 다음 회차입니다.
+  </p>
+  <a class="repo" href="https://github.com/MaoEmong/interview-study" target="_blank" rel="noopener">
+    github.com/MaoEmong/interview-study ↗
+  </a>
+</div>
+
+</body>
+</html>
