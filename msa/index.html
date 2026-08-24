@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2026.08.26 스터디 — MSA: 서비스를 쪼갠다는 것</title>
+<style>
+:root{
+  --bg:#EEF3F9; --grid:#DCE6F2; --ink:#17325B; --line:#8FA6C6;
+  --amber:#F59E0B; --red:#C05656; --green:#15803D; --ev:#2563EB; --cmd:#D97706;
+  --msa:#EA580C; --mono:'SF Mono','Consolas',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  background:var(--bg);
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:24px 24px;
+  color:var(--ink);font-family:'Pretendard','Apple SD Gothic Neo','Noto Sans KR',sans-serif;
+  max-width:860px;margin:0 auto;padding:18px 14px 60px;
+}
+.hero{background:#fff;border:2px solid var(--ink);border-radius:14px;padding:16px 20px;margin-bottom:8px}
+.hero .eyebrow{font-size:11px;letter-spacing:3px;font-weight:800;color:var(--msa)}
+.hero h1{font-size:21px;font-weight:900;margin:2px 0 8px}
+.hero .q{background:#FFF7ED;border-left:4px solid var(--msa);border-radius:0 8px 8px 0;padding:8px 12px;font-size:13.5px;font-weight:800}
+.hero .sub{font-size:11.5px;color:#33507E;margin-top:8px;line-height:1.5}
+.sec{display:flex;align-items:center;gap:10px;margin:40px 0 4px;padding-bottom:7px;border-bottom:3px solid var(--msa)}
+.sec .no{background:var(--msa);color:#fff;font-weight:900;font-size:14px;border-radius:8px;padding:3px 10px}
+.sec h2{font-size:17px;font-weight:900}
+.lead{font-size:12.5px;color:#33507E;margin:8px 2px 4px;line-height:1.55}
+.art{width:100%;border:1.6px solid var(--ink);border-radius:12px;margin:10px 0;display:block;background:#fff}
+.artlbl{font-size:10.5px;font-weight:800;color:#4A6DA7;letter-spacing:.5px;margin:14px 2px -4px}
+.panel{background:#F8FAFD;border:1.6px solid var(--ink);border-radius:14px;padding:12px;margin:12px 0}
+.ptitle{font-size:12px;font-weight:900;color:var(--msa);letter-spacing:.5px;margin-bottom:8px}
+.ctl{display:flex;gap:5px;margin-bottom:6px;flex-wrap:wrap}
+.ctl button{border:1.5px solid var(--line);background:#fff;border-radius:8px;padding:7px 5px;font-size:10.5px;font-weight:800;color:#4A6DA7;cursor:pointer;flex:1;min-width:58px}
+.ctl button.sel{border-color:var(--ink);background:var(--ink);color:#fff}
+.ctl button.go{background:var(--amber);border-color:var(--amber);color:#fff}
+svg{width:100%;height:auto;display:block;background:#fff;border:1px solid #DCE6F2;border-radius:10px}
+.box{fill:#fff;stroke:#17325B;stroke-width:1.6}
+.nm{font-size:15px;font-weight:800;fill:#17325B}
+.tg{font-size:10.5px;font-weight:800;fill:#4A6DA7;letter-spacing:.4px}
+.mt{font-size:11.5px;fill:#4A6DA7}
+.mono{font-family:var(--mono)}
+.wire{stroke:#8FA6C6;stroke-width:2;fill:none}
+.hot .box{stroke:var(--amber);stroke-width:2.6;fill:#FFF7E6}
+.past .box{stroke:var(--green);fill:#F0FDF4}
+.bad .box{stroke:var(--red);stroke-width:2.6;fill:#FEF2F2}
+.pk{transition:transform .5s cubic-bezier(.4,.1,.3,1)}
+.pk circle{fill:var(--amber);stroke:#fff;stroke-width:2.5}
+.pk.ev circle{fill:var(--ev)}
+@media (prefers-reduced-motion:reduce){.pk{transition:none}}
+.cap{background:#fff;border:1.6px solid #17325B;border-radius:10px;padding:8px 13px 10px;min-height:74px;margin-top:8px}
+.cap .capT{font-size:13px;font-weight:800;display:block}
+.cap .capX{font-size:11.5px;color:#33507E;line-height:1.45;display:block}
+.cap code{font-family:var(--mono);font-size:10.5px;background:#EEF3F9;border-radius:5px;padding:1px 6px}
+.next{background:#fff;border:2px dashed var(--line);border-radius:12px;padding:14px 18px;font-size:12.5px;color:#33507E;line-height:1.6;margin-top:10px}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="eyebrow">MICROSERVICES ARCHITECTURE</div>
+  <h1>2026.08.26 스터디 — MSA: 서비스를 쪼갠다는 것</h1>
+  <div class="q">오늘의 질문 — 서비스를 쪼개면, 트랜잭션은 누가 책임지는가</div>
+  <div class="sub">각 항목: 만화로 개념 → 판서로 구조 → 시뮬레이터로 단계별 확인. 시뮬레이터는 [▶ 재생 / 한 단계 ▸ / ⟲ 리셋]으로 조작한다.</div>
+</div>
+
+<!-- ═══ 1. 모놀리식 ═══ -->
+<div class="sec"><span class="no">1</span><h2>모놀리식 — 출발점과 한계</h2></div>
+<img class="art" src="img/comic1.jpg" alt="모놀리식 만화">
+<div class="artlbl">판서 — 모놀리식의 요청 흐름 / 한 곳의 과부하가 전체 마비로</div>
+<img class="art" src="img/board01.png" alt="모놀리식 시퀀스">
+<img class="art" src="img/board02.png" alt="모놀리식 마비">
+<div class="lead">시퀀스를 보면 서비스 개념은 모놀리식 안에도 이미 있다 — 다만 전부 한 프로세스다. 그래서 한 곳의 과부하가 응답 전체를 멈춘다 (그림의 빨간 구간뿐 아니라 실제로는 앞단 응답까지 전부).</div>
+
+<!-- ═══ 2. MSA란 ═══ -->
+<div class="sec"><span class="no">2</span><h2>MSA란 — 무엇을 해결하는가</h2></div>
+<img class="art" src="img/comic2.jpg" alt="MSA 만화">
+<div class="artlbl">판서 — MSA에서는 장애가 인스턴스 안에 갇힌다</div>
+<img class="art" src="img/board03.png" alt="MSA 격리">
+
+<div class="panel" id="t1">
+<div class="ptitle">📐 시뮬레이터 — 모놀리식 → MSA</div>
+<div class="ctl">
+  <button class="sc sel" data-sc="0">① 장애 격리 비교</button>
+  <button class="sc" data-sc="1">② 분해 과정</button>
+  <button class="go" data-act="play">▶ 재생</button>
+  <button data-act="step">한 단계 ▸</button>
+  <button data-act="reset">⟲ 리셋</button>
+</div>
+<svg viewBox="0 0 720 460" preserveAspectRatio="xMidYMid meet">
+  <text class="nm" x="360" y="34" text-anchor="middle" id="t1title" style="font-size:14px">모놀리식 — 하나의 프로세스, 하나의 DB</text>
+  <g id="t1mono">
+    <g class="stn" id="t1mBig"><rect class="box" x="150" y="60" width="420" height="200" rx="14"/>
+      <text class="tg" x="360" y="84" text-anchor="middle">하나의 애플리케이션 (한 프로세스)</text></g>
+    <g class="stn" id="t1mA"><rect class="box" x="175" y="100" width="110" height="70" rx="9"/>
+      <text class="mt" x="230" y="140" text-anchor="middle" style="font-weight:800">주문 모듈</text></g>
+    <g class="stn" id="t1mB"><rect class="box" x="305" y="100" width="110" height="70" rx="9"/>
+      <text class="mt" x="360" y="140" text-anchor="middle" style="font-weight:800">상품 모듈</text></g>
+    <g class="stn" id="t1mC"><rect class="box" x="435" y="100" width="110" height="70" rx="9"/>
+      <text class="mt" x="490" y="140" text-anchor="middle" style="font-weight:800">배송 모듈</text></g>
+    <line class="wire" x1="285" y1="135" x2="305" y2="135"/>
+    <line class="wire" x1="415" y1="135" x2="435" y2="135"/>
+    <text class="mt" x="360" y="196" text-anchor="middle" style="font-size:11px">모듈 사이 = 함수 호출</text>
+    <g class="stn" id="t1mDB"><rect class="box" x="300" y="210" width="120" height="40" rx="9"/>
+      <text class="mt" x="360" y="235" text-anchor="middle" style="font-weight:800">DB 하나</text></g>
+    <rect id="t1bound" x="167" y="92" width="252" height="86" rx="10" fill="none" stroke="#F59E0B" stroke-width="2" stroke-dasharray="7 5" opacity="0"/>
+  </g>
+  <g id="t1msa" style="display:none">
+    <g class="stn" id="t1sA"><rect class="box" x="70" y="80" width="160" height="80" rx="10"/>
+      <text class="nm" x="150" y="126" text-anchor="middle" style="font-size:14px">주문 서비스</text></g>
+    <g class="stn" id="t1sB"><rect class="box" x="280" y="80" width="160" height="80" rx="10"/>
+      <text class="nm" x="360" y="126" text-anchor="middle" style="font-size:14px">상품 서비스</text></g>
+    <g class="stn" id="t1sC"><rect class="box" x="490" y="80" width="160" height="80" rx="10"/>
+      <text class="nm" x="570" y="126" text-anchor="middle" style="font-size:14px">배송 서비스</text></g>
+    <line class="wire" x1="230" y1="120" x2="280" y2="120"/>
+    <line class="wire" x1="440" y1="120" x2="490" y2="120"/>
+    <text class="mt" x="360" y="62" text-anchor="middle" id="t1net" style="font-size:11px;font-weight:800" fill="#C05656"></text>
+    <g class="stn" id="t1shDB" style="display:none"><rect class="box" x="300" y="230" width="120" height="44" rx="9"/>
+      <text class="mt" x="360" y="257" text-anchor="middle" style="font-weight:800">공유 DB</text></g>
+    <g id="t1shWires" style="display:none">
+      <line class="wire" x1="150" y1="160" x2="330" y2="230" stroke-dasharray="4 4"/>
+      <line class="wire" x1="360" y1="160" x2="360" y2="230" stroke-dasharray="4 4"/>
+      <line class="wire" x1="570" y1="160" x2="390" y2="230" stroke-dasharray="4 4"/>
+    </g>
+    <g id="t1spDB" style="display:none">
+      <g class="stn" id="t1dA"><rect class="box" x="95" y="210" width="110" height="42" rx="9"/>
+        <text class="mt" x="150" y="236" text-anchor="middle" style="font-weight:800">주문 DB</text></g>
+      <g class="stn" id="t1dB"><rect class="box" x="305" y="210" width="110" height="42" rx="9"/>
+        <text class="mt" x="360" y="236" text-anchor="middle" style="font-weight:800">상품 DB</text></g>
+      <g class="stn" id="t1dC"><rect class="box" x="515" y="210" width="110" height="42" rx="9"/>
+        <text class="mt" x="570" y="236" text-anchor="middle" style="font-weight:800">배송 DB</text></g>
+      <line class="wire" x1="150" y1="160" x2="150" y2="210"/>
+      <line class="wire" x1="360" y1="160" x2="360" y2="210"/>
+      <line class="wire" x1="570" y1="160" x2="570" y2="210"/>
+    </g>
+  </g>
+  <g><rect class="box" x="60" y="285" width="600" height="150" rx="10" style="stroke-dasharray:6 4"/>
+    <text class="tg" x="76" y="309">상태</text>
+    <text class="nm" x="76" y="341" id="t1n_1" style="font-size:13.5px"></text>
+    <text class="nm" x="76" y="373" id="t1n_2" style="font-size:13.5px"></text>
+    <text class="nm" x="76" y="405" id="t1n_3" style="font-size:13.5px"></text></g>
+</svg>
+<div class="cap"><b class="capT"></b><span class="capX"></span></div>
+</div>
+
+<!-- ═══ 3. DDD ═══ -->
+<div class="sec"><span class="no">3</span><h2>서비스 분리의 기준 — DDD</h2></div>
+<img class="art" src="img/comic3.jpg" alt="DDD 만화">
+<div class="lead">기술 계층으로 자르면 모든 조각이 모든 층에 의존한다(케이크). 함께 변하는 업무끼리 묶는 것 — 도메인 경계가 자르는 기준이다. 위 시뮬레이터의 "② 분해 과정"에서 경계 긋기 단계가 이 내용이다.</div>
+
+<!-- ═══ 4. 동기 통신 ═══ -->
+<div class="sec"><span class="no">4</span><h2>동기 통신 — API 호출과 Gateway</h2></div>
+<img class="art" src="img/comic4.jpg" alt="동기 만화">
+<div class="artlbl">판서 — 서비스별 포트 직접 호출 / 클라이언트 분리 / 동기 체인 주문 흐름</div>
+<img class="art" src="img/board05.png" alt="포트 URL">
+<img class="art" src="img/board04.png" alt="클라이언트 분리">
+<img class="art" src="img/board06.png" alt="동기 체인">
+
+<div class="panel" id="t2">
+<div class="ptitle">📐 시뮬레이터 — 동기 호출과 장애 전파</div>
+<div class="ctl">
+  <button class="sc sel" data-sc="0">① 정상 — 지연 합산</button>
+  <button class="sc" data-sc="1">② 장애 전파</button>
+  <button class="sc" data-sc="2">③ 서킷 브레이커</button>
+  <button class="go" data-act="play">▶ 재생</button>
+  <button data-act="step">한 단계 ▸</button>
+  <button data-act="reset">⟲ 리셋</button>
+</div>
+<svg viewBox="0 0 720 450" preserveAspectRatio="xMidYMid meet">
+  <g class="stn" id="t2cl"><rect class="box" x="30" y="90" width="120" height="80" rx="10"/>
+    <text class="nm" x="90" y="126" text-anchor="middle" style="font-size:13px">클라이언트</text>
+    <text class="mt" x="90" y="152" text-anchor="middle" id="t2clS" style="font-size:11px">김현지</text></g>
+  <g class="stn" id="t2o"><rect class="box" x="210" y="90" width="130" height="80" rx="10"/>
+    <text class="nm" x="275" y="120" text-anchor="middle" style="font-size:13px">주문</text>
+    <text class="mt" x="275" y="150" text-anchor="middle" id="t2oS" style="font-size:11px">대기 스레드 0</text></g>
+  <g class="stn" id="t2p"><rect class="box" x="400" y="90" width="130" height="80" rx="10"/>
+    <text class="nm" x="465" y="120" text-anchor="middle" style="font-size:13px">상품</text>
+    <text class="mt" x="465" y="150" text-anchor="middle" id="t2pS" style="font-size:11px">대기 스레드 0</text></g>
+  <g class="stn" id="t2d"><rect class="box" x="590" y="90" width="110" height="80" rx="10"/>
+    <text class="nm" x="645" y="120" text-anchor="middle" style="font-size:13px">배송</text>
+    <text class="mt" x="645" y="150" text-anchor="middle" id="t2dS" style="font-size:11px">정상</text></g>
+  <line class="wire" x1="150" y1="130" x2="210" y2="130"/>
+  <line class="wire" x1="340" y1="130" x2="400" y2="130"/>
+  <line class="wire" x1="530" y1="130" x2="590" y2="130"/>
+  <g id="t2cb" style="display:none">
+    <rect x="536" y="108" width="48" height="44" rx="8" fill="#fff" stroke="#17325B" stroke-width="1.6"/>
+    <text x="560" y="127" text-anchor="middle" style="font-size:9px;font-weight:800" fill="#17325B">CB</text>
+    <text x="560" y="142" text-anchor="middle" id="t2cbS" style="font-size:9.5px;font-weight:800" fill="#15803D">CLOSED</text>
+  </g>
+  <g><rect class="box" x="30" y="210" width="670" height="88" rx="10" style="stroke-dasharray:6 4"/>
+    <text class="tg" x="46" y="234">응답 시간계</text>
+    <text class="nm mono" x="46" y="268" id="t2timer" style="font-size:17px">0 ms</text></g>
+  <g><rect class="box" x="30" y="318" width="670" height="100" rx="10" style="stroke-dasharray:6 4"/>
+    <text class="tg" x="46" y="342">관찰</text>
+    <text class="nm" x="46" y="370" id="t2n1" style="font-size:13px"></text>
+    <text class="nm" x="46" y="396" id="t2n2" style="font-size:13px"></text></g>
+  <g class="pk" id="t2pk" transform="translate(90,70)"><circle r="11"/></g>
+</svg>
+<div class="cap"><b class="capT"></b><span class="capX"></span></div>
+</div>
+
+<!-- ═══ 5. 비동기 통신 ═══ -->
+<div class="sec"><span class="no">5</span><h2>비동기 통신 — 이벤트와 Kafka</h2></div>
+<img class="art" src="img/comic5.jpg" alt="비동기 만화">
+<div class="artlbl">판서 — 진입은 그대로, 협업층에 Kafka가 추가된다</div>
+<img class="art" src="img/board13.png" alt="HTTP→Kafka 협업">
+
+<div class="panel" id="t3">
+<div class="ptitle">📐 시뮬레이터 — 발행/구독과 장애 격리</div>
+<div class="ctl">
+  <button class="sc sel" data-sc="0">① 발행 / 구독</button>
+  <button class="sc" data-sc="1">② 장애 격리</button>
+  <button class="go" data-act="play">▶ 재생</button>
+  <button data-act="step">한 단계 ▸</button>
+  <button data-act="reset">⟲ 리셋</button>
+</div>
+<svg viewBox="0 0 720 460" preserveAspectRatio="xMidYMid meet">
+  <g class="stn" id="t3o"><rect class="box" x="40" y="160" width="150" height="90" rx="10"/>
+    <text class="nm" x="115" y="198" text-anchor="middle" style="font-size:13.5px">주문 서비스</text>
+    <text class="mt" x="115" y="226" text-anchor="middle" id="t3oS" style="font-size:11px">대기</text></g>
+  <g class="stn" id="t3k"><rect class="box" x="270" y="60" width="180" height="300" rx="12"/>
+    <text class="tg" x="360" y="86" text-anchor="middle">브로커 (Kafka)</text>
+    <text class="mono" x="360" y="122" text-anchor="middle" id="t3m1" style="font-size:11.5px" fill="#8FA6C6">—</text>
+    <text class="mono" x="360" y="152" text-anchor="middle" id="t3m2" style="font-size:11.5px" fill="#8FA6C6">—</text>
+    <text class="mono" x="360" y="182" text-anchor="middle" id="t3m3" style="font-size:11.5px" fill="#8FA6C6">—</text>
+    <text class="mt" x="360" y="336" text-anchor="middle" style="font-size:10px">메시지를 보관한다</text></g>
+  <g class="stn" id="t3e"><rect class="box" x="540" y="55" width="150" height="70" rx="10"/>
+    <text class="nm" x="615" y="85" text-anchor="middle" style="font-size:13px">이메일</text>
+    <text class="mt" x="615" y="109" text-anchor="middle" id="t3eS" style="font-size:10.5px">구독 중</text></g>
+  <g class="stn" id="t3s"><rect class="box" x="540" y="175" width="150" height="70" rx="10"/>
+    <text class="nm" x="615" y="205" text-anchor="middle" style="font-size:13px">통계</text>
+    <text class="mt" x="615" y="229" text-anchor="middle" id="t3sS" style="font-size:10.5px">구독 중</text></g>
+  <g class="stn" id="t3r"><rect class="box" x="540" y="295" width="150" height="70" rx="10"/>
+    <text class="nm" x="615" y="325" text-anchor="middle" style="font-size:13px">추천</text>
+    <text class="mt" x="615" y="349" text-anchor="middle" id="t3rS" style="font-size:10.5px">구독 중</text></g>
+  <line class="wire" x1="190" y1="205" x2="270" y2="205"/>
+  <line class="wire" x1="450" y1="120" x2="540" y2="90"/>
+  <line class="wire" x1="450" y1="205" x2="540" y2="210"/>
+  <line class="wire" x1="450" y1="290" x2="540" y2="330"/>
+  <g><rect class="box" x="40" y="385" width="650" height="62" rx="10" style="stroke-dasharray:6 4"/>
+    <text class="tg" x="56" y="408">관찰</text>
+    <text class="nm" x="56" y="433" id="t3n1" style="font-size:12.5px"></text></g>
+  <g class="pk ev" id="t3pk" transform="translate(115,130)"><circle r="11"/></g>
+</svg>
+<div class="cap"><b class="capT"></b><span class="capX"></span></div>
+</div>
+
+<!-- ═══ 6. 분산 트랜잭션 ═══ -->
+<div class="sec"><span class="no">6</span><h2>분산 트랜잭션 — 쪼개진 @Transactional</h2></div>
+<img class="art" src="img/comic6.jpg" alt="분산 트랜잭션 만화">
+<div class="artlbl">판서 — HTTP 연쇄 호출에서 나오는 세 가지 질문</div>
+<img class="art" src="img/board07.png" alt="왜 HTTP만으로 부족한가">
+<div class="lead">중간 실패 가능 / 누가 전체를 조율하지? / 어디까지 되돌려야 하지? — 이 세 질문의 답이 사가 패턴이다. 반쪽 상태가 실제로 어떻게 생기는지는 아래 시뮬레이터의 "① 반쪽 상태"에서 값으로 확인한다.</div>
+
+<!-- ═══ 7. 사가 패턴 ═══ -->
+<div class="sec"><span class="no">7</span><h2>사가 패턴 — 보상으로 되돌리기</h2></div>
+<img class="art" src="img/comic7.jpg" alt="사가 만화">
+
+<div class="panel" id="t4">
+<div class="ptitle">📐 시뮬레이터 — 쪼개진 트랜잭션과 사가</div>
+<div class="ctl">
+  <button class="sc sel" data-sc="0">① 반쪽 상태 (문제)</button>
+  <button class="sc" data-sc="1">② 사가 — 성공</button>
+  <button class="sc" data-sc="2">③ 사가 — 보상</button>
+  <button class="go" data-act="play">▶ 재생</button>
+  <button data-act="step">한 단계 ▸</button>
+  <button data-act="reset">⟲ 리셋</button>
+</div>
+<svg viewBox="0 0 720 480" preserveAspectRatio="xMidYMid meet">
+  <g class="stn" id="t4cl"><rect class="box" x="40" y="26" width="150" height="76" rx="10"/>
+    <text class="nm" x="115" y="56" text-anchor="middle" style="font-size:13px">김현지</text>
+    <text class="mt" x="115" y="82" text-anchor="middle" id="t4clS" style="font-size:11px">주문 버튼 클릭</text></g>
+  <text class="mt" x="420" y="52" text-anchor="middle" id="t4flow" style="font-size:12px;font-weight:800"></text>
+  <g class="stn" id="t4o"><rect class="box" x="60" y="130" width="180" height="110" rx="10"/>
+    <text class="tg" x="150" y="156" text-anchor="middle">주문 DB</text>
+    <text class="nm" x="150" y="190" text-anchor="middle" id="t4ov" style="font-size:14px">—</text>
+    <text class="mt" x="150" y="218" text-anchor="middle" id="t4om" style="font-size:10.5px"></text></g>
+  <g class="stn" id="t4p"><rect class="box" x="270" y="130" width="180" height="110" rx="10"/>
+    <text class="tg" x="360" y="156" text-anchor="middle">결제 DB</text>
+    <text class="nm" x="360" y="190" text-anchor="middle" id="t4pv" style="font-size:14px">—</text>
+    <text class="mt" x="360" y="218" text-anchor="middle" id="t4pm" style="font-size:10.5px"></text></g>
+  <g class="stn" id="t4s"><rect class="box" x="480" y="130" width="180" height="110" rx="10"/>
+    <text class="tg" x="570" y="156" text-anchor="middle">재고 DB</text>
+    <text class="nm" x="570" y="190" text-anchor="middle" id="t4sv" style="font-size:14px">재고 30</text>
+    <text class="mt" x="570" y="218" text-anchor="middle" id="t4sm" style="font-size:10.5px"></text></g>
+  <g><rect class="box" x="60" y="275" width="600" height="120" rx="10" style="stroke-dasharray:6 4"/>
+    <text class="tg" x="76" y="299">진행</text>
+    <text class="nm" x="76" y="329" id="t4l1" style="font-size:13px"></text>
+    <text class="nm" x="76" y="357" id="t4l2" style="font-size:13px"></text>
+    <text class="nm" x="76" y="385" id="t4l3" style="font-size:13px"></text></g>
+  <text class="nm" x="360" y="440" text-anchor="middle" id="t4fin" style="font-size:14px;font-weight:800"></text>
+  <g class="pk" id="t4pk" transform="translate(115,116)"><circle r="11"/></g>
+</svg>
+<div class="cap"><b class="capT"></b><span class="capX"></span></div>
+</div>
+
+<div class="artlbl">판서 — 사가 성공/보상 · event vs command · Orchestrator의 역할</div>
+<img class="art" src="img/board11.png" alt="사가 성공 보상">
+<img class="art" src="img/board09.png" alt="event vs command">
+<img class="art" src="img/board10.png" alt="Orchestrator 역할">
+
+<div class="panel" id="t5">
+<div class="ptitle">📐 시뮬레이터 — Choreography vs Orchestration</div>
+<div class="ctl">
+  <button class="sc sel" data-sc="0">① Choreography — 실패</button>
+  <button class="sc" data-sc="1">② Orchestration — 실패</button>
+  <button class="go" data-act="play">▶ 재생</button>
+  <button data-act="step">한 단계 ▸</button>
+  <button data-act="reset">⟲ 리셋</button>
+</div>
+<svg viewBox="0 0 720 520" preserveAspectRatio="xMidYMid meet">
+  <g class="stn" id="t5orch" style="display:none"><rect class="box" x="30" y="110" width="150" height="260" rx="12"/>
+    <text class="tg" x="105" y="136" text-anchor="middle">오케스트레이터</text>
+    <text class="mt" x="105" y="166" text-anchor="middle" id="t5oS1" style="font-size:10.5px"></text>
+    <text class="mt" x="105" y="192" text-anchor="middle" id="t5oS2" style="font-size:10.5px"></text>
+    <text class="mt" x="105" y="218" text-anchor="middle" id="t5oS3" style="font-size:10.5px"></text></g>
+  <g class="stn" id="t5k"><rect class="box" x="230" y="50" width="200" height="380" rx="12"/>
+    <text class="tg" x="330" y="76" text-anchor="middle">브로커 (Kafka)</text>
+    <text class="mono" x="330" y="112" text-anchor="middle" id="t5q1" style="font-size:11px" fill="#8FA6C6">—</text>
+    <text class="mono" x="330" y="142" text-anchor="middle" id="t5q2" style="font-size:11px" fill="#8FA6C6">—</text>
+    <text class="mono" x="330" y="172" text-anchor="middle" id="t5q3" style="font-size:11px" fill="#8FA6C6">—</text>
+    <text class="mono" x="330" y="202" text-anchor="middle" id="t5q4" style="font-size:11px" fill="#8FA6C6">—</text>
+    <text class="mono" x="330" y="232" text-anchor="middle" id="t5q5" style="font-size:11px" fill="#8FA6C6">—</text>
+    <text class="mono" x="330" y="262" text-anchor="middle" id="t5q6" style="font-size:11px" fill="#8FA6C6">—</text>
+    <text class="mono" x="330" y="292" text-anchor="middle" id="t5q7" style="font-size:11px" fill="#8FA6C6">—</text></g>
+  <g class="stn" id="t5so"><rect class="box" x="500" y="70" width="180" height="76" rx="10"/>
+    <text class="nm" x="590" y="102" text-anchor="middle" style="font-size:13px">주문 서비스</text>
+    <text class="mt" x="590" y="128" text-anchor="middle" id="t5soS" style="font-size:10.5px"></text></g>
+  <g class="stn" id="t5sp"><rect class="box" x="500" y="190" width="180" height="76" rx="10"/>
+    <text class="nm" x="590" y="222" text-anchor="middle" style="font-size:13px">상품 서비스</text>
+    <text class="mt" x="590" y="248" text-anchor="middle" id="t5spS" style="font-size:10.5px">재고 30</text></g>
+  <g class="stn" id="t5sd"><rect class="box" x="500" y="310" width="180" height="76" rx="10"/>
+    <text class="nm" x="590" y="342" text-anchor="middle" style="font-size:13px">배송 서비스</text>
+    <text class="mt" x="590" y="368" text-anchor="middle" id="t5sdS" style="font-size:10.5px"></text></g>
+  <text class="mt" x="330" y="460" text-anchor="middle" style="font-size:11px">
+    <tspan fill="#2563EB" font-weight="800">● event</tspan>  이미 일어난 사실 &#160;&#160; <tspan fill="#D97706" font-weight="800">● command</tspan>  다음 요청</text>
+  <text class="nm" x="360" y="500" text-anchor="middle" id="t5fin" style="font-size:13px;font-weight:800"></text>
+</svg>
+<div class="cap"><b class="capT"></b><span class="capX"></span></div>
+</div>
+
+<div class="artlbl">판서 — 지휘형 실제 구현 (Kafka 토픽 · @KafkaListener)</div>
+<img class="art" src="img/board14.png" alt="오케스트레이터 한글 정리">
+<img class="art" src="img/board08.png" alt="주문 생성 전체 흐름">
+<img class="art" src="img/board12.png" alt="주문 실패 보상 흐름">
+
+<!-- ═══ 8. 운영의 산 ═══ -->
+<div class="sec"><span class="no">8</span><h2>운영의 산 — Docker·K8s·관측 (다음 회차 예고)</h2></div>
+<div class="next">
+  서비스 10개 = 배포 10개, 로그 10곳. MSA의 진짜 진입 장벽은 코드가 아니라 운영이다.<br>
+  <b>Docker</b>(실행 환경을 이미지로 포장) · <b>Kubernetes</b>(원하는 상태를 선언하면 알아서 유지) · <b>Prometheus/Grafana</b>(수집/시각화) —
+  오늘은 "왜 필요한가"까지. <b>다음 회차 주제: Docker &amp; Kubernetes</b>, 직접 띄우며 다룬다.
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+let ACTIVE='t1';
+const cap=(t,x)=>{const p=$(ACTIVE);p.querySelector('.capT').textContent=t;p.querySelector('.capX').innerHTML=x;};
+function mark(panel,hotId,bad){
+  document.querySelectorAll(`#${panel} .stn`).forEach(s=>{
+    if(s.id===hotId){s.classList.remove('past','bad');s.classList.add(bad?'bad':'hot');}
+    else if(s.classList.contains('hot')){s.classList.replace('hot','past');}
+  });
+}
+function markBad(panel,id){const s=$(id);s.classList.remove('hot','past');s.classList.add('bad');}
+function markPast(panel,id){const s=$(id);s.classList.remove('hot','bad');s.classList.add('past');}
+function clearMarks(panel){document.querySelectorAll(`#${panel} .stn`).forEach(s=>s.classList.remove('hot','past','bad'));}
+function makePlayer(panelId, opts){
+  const P={i:-1, steps:[], timer:null, sc:0};
+  const panel=$(panelId);
+  function stopAuto(){if(P.timer){clearInterval(P.timer);P.timer=null;
+    const pb=panel.querySelector('[data-act="play"]'); if(pb)pb.textContent='▶ 재생';}}
+  function doStep(){ ACTIVE=panelId; if(P.i>=P.steps.length-1){stopAuto();return;} P.i++; P.steps[P.i](); }
+  function reset(){ stopAuto(); ACTIVE=panelId; P.i=-1; opts.onReset(P.sc); }
+  panel.querySelectorAll('[data-act]').forEach(b=>{
+    if(b.dataset.act==='step') b.onclick=()=>{stopAuto();doStep();};
+    if(b.dataset.act==='reset') b.onclick=reset;
+    if(b.dataset.act==='play') b.onclick=()=>{
+      if(P.timer){stopAuto();return;}
+      if(P.i>=P.steps.length-1)reset();
+      doStep(); P.timer=setInterval(doStep, opts.gap||2300); b.textContent='⏸ 일시정지';
+    };
+  });
+  panel.querySelectorAll('.sc').forEach(b=>b.onclick=()=>{
+    panel.querySelectorAll('.sc').forEach(x=>x.classList.remove('sel'));
+    b.classList.add('sel'); P.sc=+b.dataset.sc; reset();
+  });
+  P.load=s=>{P.steps=s;}; P.reset=reset; return P;
+}
+
+/* ── T1 ── */
+function t1base(){
+  clearMarks('t1');
+  $('t1mono').style.display=''; $('t1msa').style.display='none';
+  $('t1bound').setAttribute('opacity',0);
+  $('t1shDB').style.display='none'; $('t1shWires').style.display='none'; $('t1spDB').style.display='none';
+  $('t1net').textContent='';
+  $('t1title').textContent='모놀리식 — 하나의 프로세스, 하나의 DB';
+  ['t1n_1','t1n_2','t1n_3'].forEach(i=>{$(i).textContent='';$(i).setAttribute('fill','#17325B');});
+}
+const p1=makePlayer('t1',{gap:2500,onReset:sc=>{
+  t1base();
+  cap(sc===0?'① 장애 격리 비교 — 같은 사고, 다른 결말':'② 분해 과정 — 경계 → 분리 → DB까지','▶ 재생 또는 한 단계로.');
+  if(sc===0){
+    p1.load([
+     ()=>{markBad('t1','t1mB');$('t1n_1').textContent='상품 모듈에서 메모리 누수 발생';$('t1n_1').setAttribute('fill','#C05656');
+          cap('상품 모듈이 아프기 시작했다','트래픽 과부하든 메모리 누수든 — 사고는 언제나 한 곳에서 시작된다.');},
+     ()=>{markBad('t1','t1mBig');markBad('t1','t1mA');markBad('t1','t1mC');markBad('t1','t1mDB');
+          $('t1n_2').textContent='한 프로세스 → 주문·배송·응답 전부 마비';$('t1n_2').setAttribute('fill','#C05656');
+          cap('전체 마비','모놀리식은 한 프로세스다. 상품이 메모리를 다 먹으면 주문도 배송도 같은 배에서 가라앉는다.');},
+     ()=>{t1base();$('t1mono').style.display='none';$('t1msa').style.display='';$('t1spDB').style.display='';
+          $('t1title').textContent='MSA — 같은 사고가 나면?';
+          cap('같은 시스템을 MSA로 바꿔보자','서비스 3개, DB 3개, 프로세스도 3개.');},
+     ()=>{markBad('t1','t1sB');markBad('t1','t1dB');
+          $('t1n_1').textContent='상품 서비스 마비 — 상품 조회·재고 차감 불가';$('t1n_1').setAttribute('fill','#C05656');
+          cap('상품 서비스에 같은 사고','이번에도 상품이 죽었다. 그런데—');},
+     ()=>{markPast('t1','t1sA');markPast('t1','t1sC');markPast('t1','t1dA');markPast('t1','t1dC');
+          $('t1n_2').textContent='주문 조회·배송 추적은 계속 동작';$('t1n_2').setAttribute('fill','#15803D');
+          $('t1n_3').textContent='장애가 서비스 경계 안에 갇혔다 (단, 동기 사슬이 있으면? → 4번 시뮬레이터)';
+          cap('장애 격리','다른 프로세스니까 다른 서비스는 산다. 단, 이 격리는 공짜가 아니다.');}
+    ]);
+  }else{
+    p1.load([
+     ()=>{mark('t1','t1mBig');cap('출발: 모놀리식','모든 모듈이 한 프로세스, DB 하나. 함수 호출로 이어진다.');},
+     ()=>{$('t1bound').setAttribute('opacity',1);mark('t1','t1mA');
+          $('t1n_1').textContent='1단계: 도메인 경계로 모듈을 나눈다 — 모듈러 모놀리스';
+          cap('경계부터 긋는다 (DDD)','아직 한 프로세스지만 도메인별로 모듈이 분리됐다. 이 상태가 쪼갤 준비다 — 3번 항목.');},
+     ()=>{$('t1mono').style.display='none';$('t1msa').style.display='';$('t1shDB').style.display='';$('t1shWires').style.display='';
+          $('t1title').textContent='2단계: 프로세스 분리 — 그런데 DB가 아직 하나';
+          $('t1net').textContent='함수 호출 → 네트워크 호출';
+          $('t1n_2').textContent='⚠ 서비스는 갈랐는데 DB를 공유 중';$('t1n_2').setAttribute('fill','#C05656');
+          cap('앱만 쪼개면 반쪽','호출은 네트워크가 됐는데 DB가 하나면 — 스키마 하나 바꾸면 셋이 같이 흔들린다.');},
+     ()=>{$('t1shDB').style.display='none';$('t1shWires').style.display='none';$('t1spDB').style.display='';
+          $('t1title').textContent='3단계: DB까지 분리 — MSA 완성';
+          $('t1n_2').textContent='각 서비스가 자기 데이터만 소유';$('t1n_2').setAttribute('fill','#15803D');
+          $('t1n_3').textContent='대가: 함수 호출→네트워크(4·5번), 트랜잭션이 쪼개짐(6·7번)';
+          cap('서비스별 DB — 원칙의 완성','이 순간부터 이번 회차의 모든 문제가 시작된다.');}
+    ]);
+  }
+}});
+p1.reset();
+
+/* ── T2 ── */
+function t2base(){
+  clearMarks('t2');
+  $('t2pk').setAttribute('transform','translate(90,70)');
+  $('t2timer').textContent='0 ms';
+  $('t2n1').textContent='';$('t2n2').textContent='';
+  $('t2oS').textContent='대기 스레드 0';$('t2pS').textContent='대기 스레드 0';$('t2dS').textContent='정상';
+  $('t2clS').textContent='김현지';
+  $('t2cb').style.display='none';$('t2cbS').textContent='CLOSED';$('t2cbS').setAttribute('fill','#15803D');
+  ['t2oS','t2pS','t2dS'].forEach(i=>$(i).setAttribute('fill','#4A6DA7'));
+  ['t2n1','t2n2'].forEach(i=>$(i).setAttribute('fill','#17325B'));
+}
+const p2=makePlayer('t2',{gap:2200,onReset:sc=>{
+  t2base();
+  cap(['① 정상 흐름 — 지연은 합산된다','② 배송이 죽으면 — 장애가 거슬러 올라온다','③ 서킷 브레이커 — 전파를 끊는 스위치'][sc],'노란 점이 요청이다.');
+  if(sc===2){$('t2cb').style.display='';}
+  if(sc===0){
+    p2.load([
+     ()=>{mark('t2','t2o');$('t2pk').setAttribute('transform','translate(275,70)');$('t2timer').textContent='80 ms';
+          cap('클라이언트 → 주문','네트워크 한 홉에 80ms라고 하자.');},
+     ()=>{mark('t2','t2p');$('t2pk').setAttribute('transform','translate(465,70)');$('t2timer').textContent='160 ms';
+          cap('주문 → 상품 (재고 확인)','주문은 응답을 기다리며 멈춰 있다 — 동기니까.');},
+     ()=>{mark('t2','t2d');$('t2pk').setAttribute('transform','translate(645,70)');$('t2timer').textContent='240 ms';
+          cap('상품 → 배송 (배송 가능 확인)','이제 셋이 모두 이 요청 하나에 매여 있다.');},
+     ()=>{clearMarks('t2');$('t2pk').setAttribute('transform','translate(90,70)');$('t2timer').textContent='480 ms';
+          $('t2n1').textContent='왕복 6홉 × 80ms = 480ms — 모놀리식이면 함수 호출 몇 번';
+          cap('응답 = 모든 구간의 합','체인이 길수록 느려진다. 동기 호출의 첫 번째 청구서다.');}
+    ]);
+  }else if(sc===1){
+    p2.load([
+     ()=>{markBad('t2','t2d');$('t2dS').textContent='💀 다운';$('t2dS').setAttribute('fill','#C05656');
+          cap('배송 서비스가 죽었다','체인의 끝에서 사고가 났다.');},
+     ()=>{mark('t2','t2p');$('t2pS').textContent='대기 스레드 3';$('t2pS').setAttribute('fill','#B45309');
+          $('t2timer').textContent='5,000 ms…';
+          cap('상품이 기다린다','배송 응답을 기다리는 스레드가 쌓이기 시작한다.');},
+     ()=>{markBad('t2','t2p');$('t2pS').textContent='대기 스레드 20 — 고갈!';$('t2pS').setAttribute('fill','#C05656');
+          cap('상품도 죽었다','스레드가 전부 대기에 묶여 새 요청을 못 받는다 — 배송의 장애가 상품의 장애가 됐다.');},
+     ()=>{markBad('t2','t2o');markBad('t2','t2cl');$('t2oS').textContent='대기 스레드 고갈';$('t2oS').setAttribute('fill','#C05656');
+          $('t2clS').textContent='김현지: 뱅글뱅글…';
+          $('t2n1').textContent='배송 하나 죽었는데 체인 전체가 마비 — 2번 항목의 격리가 깨졌다';$('t2n1').setAttribute('fill','#C05656');
+          $('t2n2').textContent='쪼개도 동기 사슬로 묶여 있으면 한 배다';
+          cap('연쇄 전파 완성','장애를 격리하려고 쪼갰는데, 동기 호출 사슬이 다시 연결해버렸다.');}
+    ]);
+  }else{
+    p2.load([
+     ()=>{markBad('t2','t2d');$('t2dS').textContent='💀 다운';$('t2dS').setAttribute('fill','#C05656');
+          cap('같은 상황 — 배송 다운','이번엔 상품과 배송 사이에 서킷 브레이커(CB)가 있다.');},
+     ()=>{mark('t2','t2p');$('t2pS').textContent='실패 감지 3회';$('t2pS').setAttribute('fill','#B45309');
+          cap('CB가 실패를 세고 있다','호출이 연속으로 실패하면—');},
+     ()=>{$('t2cbS').textContent='OPEN';$('t2cbS').setAttribute('fill','#C05656');
+          cap('회로 차단 — OPEN','CB가 열렸다. 배송으로 가는 호출 자체를 보내지 않는다.');},
+     ()=>{markPast('t2','t2p');markPast('t2','t2o');markPast('t2','t2cl');
+          $('t2pS').textContent='즉시 실패 응답';$('t2pS').setAttribute('fill','#15803D');
+          $('t2clS').textContent='김현지: "배송 조회 불가" 안내';
+          $('t2n1').textContent='기다리지 않으니 스레드가 안 쌓인다 — 전파 차단';$('t2n1').setAttribute('fill','#15803D');
+          $('t2n2').textContent='잠시 후 반쯤 열어 회복을 살핀다 (HALF-OPEN) — 이름만';
+          cap('전파가 끊겼다','실패를 빨리 돌려주는 게 다 같이 죽는 것보다 낫다.');}
+    ]);
+  }
+}});
+p2.reset();
+
+/* ── T3 ── */
+function t3base(){
+  clearMarks('t3');
+  $('t3pk').setAttribute('transform','translate(115,130)');
+  ['t3m1','t3m2','t3m3'].forEach(i=>{$(i).textContent='—';$(i).setAttribute('fill','#8FA6C6');});
+  $('t3oS').textContent='대기';$('t3eS').textContent='구독 중';$('t3sS').textContent='구독 중';$('t3rS').textContent='구독 중';
+  ['t3oS','t3eS','t3sS','t3rS'].forEach(i=>$(i).setAttribute('fill','#4A6DA7'));
+  $('t3n1').textContent='';
+}
+const p3=makePlayer('t3',{gap:2300,onReset:sc=>{
+  t3base();
+  cap(sc===0?'① 발행/구독 — 알리고 떠난다':'② 장애 격리 — 죽어 있어도 잃지 않는다','파란 점이 이벤트다.');
+  if(sc===0){
+    p3.load([
+     ()=>{mark('t3','t3o');$('t3oS').textContent='주문 저장 완료';
+          cap('주문이 생겼다','이메일·통계·추천을 전부 기다릴 이유가 없다.');},
+     ()=>{mark('t3','t3k');$('t3pk').setAttribute('transform','translate(360,130)');
+          $('t3m1').textContent='OrderCreated #1';$('t3m1').setAttribute('fill','#2563EB');
+          $('t3oS').textContent='발행 후 즉시 다음 일 ✓';$('t3oS').setAttribute('fill','#15803D');markPast('t3','t3o');
+          cap('발행하고 떠난다','사실만 넘기고 응답을 마쳤다. 누가 받는지 모른다 — 알 필요도 없다.');},
+     ()=>{mark('t3','t3e');$('t3pk').setAttribute('transform','translate(615,90)');$('t3eS').textContent='메일 발송 ✓';$('t3eS').setAttribute('fill','#15803D');
+          cap('구독자들이 알아서 꺼내간다','이메일 서비스가 처리했다.');},
+     ()=>{markPast('t3','t3e');mark('t3','t3s');mark('t3','t3r');
+          $('t3sS').textContent='집계 ✓';$('t3sS').setAttribute('fill','#15803D');
+          $('t3rS').textContent='모델 갱신 ✓';$('t3rS').setAttribute('fill','#15803D');
+          $('t3n1').textContent='구독자가 늘어도 주문 서비스 코드는 그대로 — 결합도가 낮다';
+          cap('셋이 각자 처리','새 구독자 추가 = 브로커에 붙기만 하면 끝.');}
+    ]);
+  }else{
+    p3.load([
+     ()=>{markBad('t3','t3e');$('t3eS').textContent='💀 다운';$('t3eS').setAttribute('fill','#C05656');
+          cap('이메일 서비스가 죽었다','4번의 동기 체인이라면 연쇄가 시작될 상황. 여기선?');},
+     ()=>{mark('t3','t3o');mark('t3','t3k');
+          $('t3m1').textContent='OrderCreated #1';$('t3m1').setAttribute('fill','#2563EB');
+          $('t3oS').textContent='정상 발행 ✓';$('t3oS').setAttribute('fill','#15803D');
+          cap('주문은 아무 영향이 없다','발행은 브로커까지만 가면 성공이다.');},
+     ()=>{$('t3m2').textContent='OrderCreated #2';$('t3m2').setAttribute('fill','#2563EB');
+          cap('주문이 계속 들어온다','메시지가 브로커에 쌓인다 — 사라지지 않는다.');},
+     ()=>{markPast('t3','t3e');$('t3eS').textContent='복구! 밀린 것 처리 중';$('t3eS').setAttribute('fill','#B45309');
+          $('t3m1').textContent='#1 → 이메일 처리 ✓';$('t3m1').setAttribute('fill','#15803D');
+          cap('이메일 서비스 복구','밀린 메시지를 순서대로 꺼내 처리한다.');},
+     ()=>{$('t3m2').textContent='#2 → 이메일 처리 ✓';$('t3m2').setAttribute('fill','#15803D');
+          $('t3eS').textContent='따라잡기 완료 ✓';$('t3eS').setAttribute('fill','#15803D');
+          $('t3n1').textContent='유실 없음. 대신 같은 메시지가 두 번 올 수도 → 멱등성이 세트';
+          cap('죽어 있어도 잃지 않는다','브로커가 보관해준 덕이다.');}
+    ]);
+  }
+}});
+p3.reset();
+
+/* ── T4 ── */
+function t4base(){
+  clearMarks('t4');
+  $('t4pk').setAttribute('transform','translate(115,116)');
+  $('t4ov').textContent='—';$('t4pv').textContent='—';$('t4sv').textContent='재고 30';
+  ['t4ov','t4pv','t4sv'].forEach(i=>$(i).setAttribute('fill','#17325B'));
+  ['t4om','t4pm','t4sm','t4l1','t4l2','t4l3','t4fin','t4flow'].forEach(i=>{$(i).textContent='';$(i).setAttribute('fill','#17325B');});
+  $('t4clS').textContent='주문 버튼 클릭';
+}
+const p4=makePlayer('t4',{gap:2400,onReset:sc=>{
+  t4base();
+  cap(['① 반쪽 상태 — @Transactional이 없는 세계','② 사가 — 로컬 트랜잭션의 릴레이','③ 사가 — 보상으로 되돌리기'][sc],'김현지가 45,000원짜리 상품을 주문한다.');
+  if(sc===0){
+    p4.load([
+     ()=>{mark('t4','t4o');$('t4pk').setAttribute('transform','translate(150,116)');
+          $('t4ov').textContent='주문 #1001 생성';$('t4om').textContent='COMMIT 완료';
+          cap('주문 DB — 커밋 완료','주문 서비스의 로컬 트랜잭션이 끝났다. 확정이다.');},
+     ()=>{mark('t4','t4p');$('t4pk').setAttribute('transform','translate(360,116)');
+          $('t4pv').textContent='45,000원 승인';$('t4pm').textContent='COMMIT 완료';
+          cap('결제 DB — 커밋 완료','카드 승인까지 확정됐다. 돈이 나갔다.');},
+     ()=>{markBad('t4','t4s');$('t4pk').setAttribute('transform','translate(570,116)');
+          $('t4sv').textContent='재고 30 (차감 실패)';$('t4sv').setAttribute('fill','#C05656');$('t4sm').textContent='트랜잭션 실패!';
+          cap('재고 차감 실패','품절이든 DB 오류든 — 세 번째 단계가 무너졌다.');},
+     ()=>{$('t4l1').textContent='ROLLBACK? → 재고 DB 안에서만 유효';
+          $('t4l2').textContent='주문·결제는 이미 각자 커밋 종료 — 되돌릴 트랜잭션이 없다';$('t4l2').setAttribute('fill','#C05656');
+          cap('ROLLBACK의 관할은 DB 하나','커밋은 끝났고, 명령이 닿을 트랜잭션 자체가 없다.');},
+     ()=>{$('t4fin').textContent='⚠ 돈은 나갔는데 물건은 없다 — 반쪽 상태';$('t4fin').setAttribute('fill','#C05656');
+          $('t4clS').textContent='김현지: 결제 문자만 왔는데요?';
+          cap('분산 트랜잭션 문제','서비스를 쪼갠 대가 중 가장 비싼 청구서. 해법은 ②③ — 사가.');}
+    ]);
+  }else if(sc===1){
+    p4.load([
+     ()=>{mark('t4','t4o');$('t4flow').textContent='사가 = 로컬 트랜잭션의 릴레이';
+          $('t4ov').textContent='주문 #1001 생성';$('t4om').textContent='로컬 커밋 ①';
+          cap('1단계: 주문 생성','작은 트랜잭션 하나가 끝나고, 다음 주자에게 넘긴다.');},
+     ()=>{markPast('t4','t4o');mark('t4','t4p');$('t4pv').textContent='45,000원 승인';$('t4pm').textContent='로컬 커밋 ②';
+          cap('2단계: 결제 승인','두 번째 로컬 트랜잭션.');},
+     ()=>{markPast('t4','t4p');mark('t4','t4s');$('t4sv').textContent='재고 30 → 29';$('t4sm').textContent='로컬 커밋 ③';
+          cap('3단계: 재고 차감','값이 실제로 줄었다.');},
+     ()=>{markPast('t4','t4s');$('t4fin').textContent='✓ 사가 완료 — 배송 시작';$('t4fin').setAttribute('fill','#15803D');
+          $('t4clS').textContent='김현지: 주문 완료!';
+          $('t4l1').textContent='큰 트랜잭션 하나 대신, 작은 확정들의 연쇄';
+          cap('성공 사가','모두 성공하면 결과는 모놀리식과 같다. 차이는 실패했을 때 — ③.');}
+    ]);
+  }else{
+    p4.load([
+     ()=>{markPast('t4','t4o');markPast('t4','t4p');
+          $('t4ov').textContent='주문 #1001 생성';$('t4om').textContent='커밋 ①';
+          $('t4pv').textContent='45,000원 승인';$('t4pm').textContent='커밋 ②';
+          cap('1·2단계 성공','①의 상황 그대로 — 주문과 결제가 확정됐다.');},
+     ()=>{markBad('t4','t4s');$('t4sv').textContent='재고 30 (차감 실패)';$('t4sv').setAttribute('fill','#C05656');$('t4sm').textContent='실패!';
+          cap('3단계 실패','여기까지는 ①과 같다. 이제부터가 다르다.');},
+     ()=>{mark('t4','t4p');$('t4pv').textContent='45,000원 취소됨';$('t4pv').setAttribute('fill','#B45309');
+          $('t4pm').textContent='보상: 결제 취소 API 호출';
+          $('t4l1').textContent='DB ROLLBACK이 아니다 — 승인을 취소하는 새 업무 작업';$('t4l1').setAttribute('fill','#B45309');
+          cap('보상 ①: 결제 취소','확정된 승인은 롤백 못 한다. 반대 업무를 새로 실행한다 — 비즈니스 롤백.');},
+     ()=>{mark('t4','t4o');$('t4ov').textContent='주문 #1001 취소됨';$('t4ov').setAttribute('fill','#B45309');
+          $('t4om').textContent='보상: 주문 취소';
+          $('t4l2').textContent='보상은 성공의 역순으로 진행된다';
+          cap('보상 ②: 주문 취소','릴레이를 거꾸로 달린다.');},
+     ()=>{clearMarks('t4');$('t4fin').textContent='김현지 화면: "주문 실패" 하나';
+          $('t4clS').textContent='김현지: 주문 실패 안내';
+          $('t4l3').textContent='보상 진행 중 잠깐의 어긋난 상태 = 최종 일관성의 대가';
+          cap('전체 흐름은 결국 정리된다','즉시는 아니어도 결국 맞춘다 — 최종 일관성.');}
+    ]);
+  }
+}});
+p4.reset();
+
+/* ── T5 ── */
+const T5Q=['t5q1','t5q2','t5q3','t5q4','t5q5','t5q6','t5q7'];
+let t5qi=0;
+function t5push(text, kind){
+  if(t5qi>=T5Q.length)return;
+  const e=$(T5Q[t5qi++]); e.textContent=text;
+  e.setAttribute('fill', kind==='ev'?'#2563EB': kind==='cmd'?'#D97706':'#C05656');
+}
+function t5base(sc){
+  clearMarks('t5'); t5qi=0;
+  T5Q.forEach(i=>{$(i).textContent='—';$(i).setAttribute('fill','#8FA6C6');});
+  $('t5orch').style.display = sc===1?'':'none';
+  ['t5oS1','t5oS2','t5oS3'].forEach(i=>$(i).textContent='');
+  $('t5soS').textContent='';$('t5spS').textContent='재고 30';$('t5sdS').textContent='';
+  ['t5soS','t5spS','t5sdS'].forEach(i=>$(i).setAttribute('fill','#4A6DA7'));
+  $('t5fin').textContent='';
+}
+const p5=makePlayer('t5',{gap:2400,onReset:sc=>{
+  t5base(sc);
+  cap(sc===0?'① Choreography — 지휘자 없이, 이벤트 도미노':'② Orchestration — event를 듣고 command를 쏜다','같은 실패(배송 생성 실패)를 두 방식으로.');
+  if(sc===0){
+    p5.load([
+     ()=>{mark('t5','t5so');$('t5soS').textContent='주문 저장';t5push('event: order-created','ev');
+          cap('주문이 사실을 알렸다','order-created — 이미 일어난 일(과거형). 누구에게 시키는 게 아니다.');},
+     ()=>{mark('t5','t5sp');$('t5spS').textContent='재고 30 → 29';t5push('event: product-decreased','ev');
+          cap('상품이 알아서 반응','order-created를 구독하고 있다가 스스로 차감하고, 또 사실을 알린다.');},
+     ()=>{markBad('t5','t5sd');$('t5sdS').textContent='배송 생성 실패!';$('t5sdS').setAttribute('fill','#C05656');
+          t5push('event: delivery-failed','fail');
+          cap('배송이 실패를 알렸다','실패도 하나의 사실이다 — 실패 이벤트가 발행된다.');},
+     ()=>{mark('t5','t5sp');$('t5spS').textContent='재고 29 → 30 (복구)';$('t5spS').setAttribute('fill','#B45309');
+          cap('상품이 스스로 보상','delivery-failed를 구독한 상품이 자기 몫의 보상(재고 복구)을 수행한다.');},
+     ()=>{mark('t5','t5so');$('t5soS').textContent='주문 취소';$('t5soS').setAttribute('fill','#B45309');
+          $('t5fin').textContent='지휘자 없음 — 전체 흐름은 어디에도 적혀있지 않다';
+          cap('Choreography의 명암','결합도는 낮다. 대신 흐름을 한눈에 볼 곳이 없다 — 서비스가 늘면 추적이 어렵다.');}
+    ]);
+  }else{
+    p5.load([
+     ()=>{mark('t5','t5so');$('t5soS').textContent='주문 저장';t5push('event: order-created','ev');
+          $('t5oS1').textContent='order-created 읽음';
+          cap('시작은 같다 — event','주문이 사실을 알리면, 이번엔 오케스트레이터가 읽는다.');},
+     ()=>{mark('t5','t5orch');t5push('command: decrease-product','cmd');
+          $('t5oS2').textContent='→ 재고 차감 명령';
+          cap('오케스트레이터가 command를 쏜다','decrease-product — 다음에 해 달라는 요청(명령형). event와 다른 언어다.');},
+     ()=>{mark('t5','t5sp');$('t5spS').textContent='재고 30 → 29';t5push('event: product-decreased','ev');
+          cap('상품이 수행하고 보고','명령을 수행한 뒤 결과를 event로 알린다.');},
+     ()=>{mark('t5','t5orch');t5push('command: create-delivery','cmd');markBad('t5','t5sd');
+          $('t5sdS').textContent='배송 생성 실패!';$('t5sdS').setAttribute('fill','#C05656');
+          t5push('event: delivery-failed','fail');
+          cap('배송 명령 → 실패 보고','실패 event가 도착했다. 보상 결정도 한 곳에서 한다.');},
+     ()=>{mark('t5','t5orch');$('t5oS3').textContent='보상 명령 — 역순';
+          t5push('command: increase-product','cmd');t5push('command: cancel-order','cmd');
+          $('t5spS').textContent='재고 29 → 30 (복구)';$('t5spS').setAttribute('fill','#B45309');
+          $('t5soS').textContent='주문 취소';$('t5soS').setAttribute('fill','#B45309');
+          cap('보상도 중앙에서 지시','increase-product, cancel-order — 성공의 역순으로 command를 쏜다.');},
+     ()=>{clearMarks('t5');
+          $('t5fin').textContent='흐름이 한 곳에 적혀 있다 — 대신 조정자 의존이 생긴다';
+          cap('Orchestration의 명암','event를 읽고 command를 결정한다 — 두 언어의 반복. 복잡한 절차엔 이쪽, 단순한 연쇄엔 Choreography.');}
+    ]);
+  }
+}});
+p5.reset();
+</script>
+</body>
+</html>
