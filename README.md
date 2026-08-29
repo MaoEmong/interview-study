@@ -11,7 +11,7 @@
 
 | 문서 | Q&A | 시뮬레이터 |
 |:---:|:---:|:---:|
-| 6종 | 270문항 | 4종 |
+| 7종 | 270문항 | 5종 |
 
 ---
 
@@ -86,6 +86,18 @@
 7. **사가 패턴** — 보상으로 되돌리기
 8. **운영의 산** — Docker·K8s·관측 (다음 회차 예고)
 
+### [Docker & Kubernetes — Image에서 서비스까지](https://maoemong.github.io/interview-study/docker-kubernetes/)
+
+Docker Image가 Container로 실행되고, Kubernetes의 Pod·Deployment·Service·Ingress를 거쳐 외부 요청을 받기까지의 흐름을 도면과 시뮬레이터로 확인합니다.
+
+1. **Docker 흐름** — Dockerfile → `docker build` → Image → `docker run` → Container
+2. **Image·Container** — Dockerfile, CMD·ENTRYPOINT, 포트·멀티 스테이지 빌드
+3. **Compose** — 서비스 이름 DNS, Volume, 환경변수·ConfigMap·Secret
+4. **Kubernetes** — Cluster, Control Plane, Node, YAML 기본 축
+5. **Pod·Deployment** — 1 Pod = 1 Container 관행, ReplicaSet, 원하는 상태 유지
+6. **Service·Ingress** — ClusterIP, NodePort, HTTP 경로 라우팅
+7. **도구·운영** — Minikube·kubectl·Helm, Registry, Rolling Update, port-forward
+
 ---
 
 ## 구조
@@ -100,7 +112,8 @@
 ├── spring-mvc/             # Spring MVC 시뮬레이터
 ├── spring-tx/              # 트랜잭션·AOP 시뮬레이터
 ├── sql-db/                 # 데이터 모델링·SQL 시뮬레이터
-└── msa/                    # MSA 시뮬레이터
+├── msa/                    # MSA 시뮬레이터
+└── docker-kubernetes/      # Docker·Kubernetes 시뮬레이터
 ```
 
 시뮬레이터는 인라인 SVG와 바닐라 JS로 구현했습니다.

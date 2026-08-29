@@ -10,7 +10,7 @@
 <style>
 :root{
   --bg:#EEF3F9; --grid:#DCE6F2; --ink:#17325B; --line:#8FA6C6; --soft:#33507E;
-  --amber:#F59E0B; --blue:#2B5CE6; --green:#15803D; --teal:#0E5E52;
+  --amber:#F59E0B; --blue:#2B5CE6; --green:#15803D; --teal:#0E5E52; --docker:#2496ED;
   --gold:#B8860B; --msa:#EA580C;
   --mono:'SF Mono','Consolas',monospace;
 }
@@ -109,10 +109,10 @@ body{
     설치할 것도, 로그인할 것도 없어요 — 링크만 열면 바로 시작합니다.
   </p>
   <div class="meta">
-    <span>문서 <b>6</b></span>
+    <span>문서 <b>7</b></span>
     <span>Q&amp;A <b>270</b>문항</span>
-    <span>시뮬레이터 <b>4</b>종</span>
-    <span>최근 업데이트 <b>2026.08.24</b></span>
+    <span>시뮬레이터 <b>5</b>종</span>
+    <span>최근 업데이트 <b>2026.09.02</b></span>
   </div>
 </header>
 
@@ -221,13 +221,28 @@ body{
     </div>
     <div class="go">시뮬레이터 열기 <i>→</i></div>
   </a>
+
+  <a class="card wide" href="docker-kubernetes/" style="--c:var(--docker)">
+    <div class="top">
+      <span class="tag">SIM</span>
+      <span class="next">NEW</span>
+      <span class="date">2026.09.02</span>
+    </div>
+    <h3>Docker &amp; Kubernetes</h3>
+    <p class="desc">Docker Image가 Container가 되고, Kubernetes의 Pod·Deployment·Service·Ingress를 거쳐 외부 요청을 받기까지의 흐름을 따라갑니다.</p>
+    <div class="chips">
+      <span>Dockerfile</span><span>Image·Container</span><span>Compose</span><span>Pod</span>
+      <span>Deployment</span><span>Service</span><span>Ingress</span><span>Minikube·kubectl</span>
+    </div>
+    <div class="go">시뮬레이터 열기 <i>→</i></div>
+  </a>
 </div>
 
 <div class="foot">
   <div class="lab">NEXT UP</div>
   <p>
     <b>운영의 산 — Docker · K8s · 관측.</b>
-    쪼개 놓은 서비스를 실제로 굴리는 이야기가 다음 회차입니다.
+    쪼개 놓은 서비스를 실제로 굴리는 이야기를 새 페이지로 정리했습니다.
   </p>
   <a class="repo" href="https://github.com/MaoEmong/interview-study" target="_blank" rel="noopener">
     github.com/MaoEmong/interview-study ↗
